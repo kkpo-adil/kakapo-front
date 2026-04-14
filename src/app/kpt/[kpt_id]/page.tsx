@@ -41,13 +41,13 @@ async function fetchKPTData(kptId: string): Promise<{
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   return {
-    title: `KPT ${params.kpt_id}`,
-    description: `Détail du Proof of Knowledge Token ${params.kpt_id}`,
+    title: `KPT ${(await params).kpt_id}`,
+    description: `Détail du Proof of Knowledge Token ${(await params).kpt_id}`,
   };
 }
 
 export default async function KPTDetailPage({ params }: PageProps) {
-  const data = await fetchKPTData(params.kpt_id);
+  const data = await fetchKPTData((await params).kpt_id);
   if (!data) notFound();
 
   const { kpt, publication } = data;

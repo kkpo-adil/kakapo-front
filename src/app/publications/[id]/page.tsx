@@ -11,7 +11,7 @@ import type { Publication, KPT, TrustScore } from "@/types/api";
 import { getSourceLabel, formatDate } from "@/lib/utils";
 
 interface PageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 async function fetchDetail(id: string): Promise<{
@@ -36,8 +36,8 @@ async function fetchDetail(id: string): Promise<{
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const pub = await getPublication(params.id).catch(
-    () => MOCK_PUBLICATIONS.find((p) => p.id === params.id)
+  const pub = await getPublication((await params).id).catch(
+    () => MOCK_PUBLICATIONS.find((p) => p.id === (await params).id)
   );
   return {
     title: pub?.title ?? "Publication",
@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function PublicationDetailPage({ params }: PageProps) {
-  const data = await fetchDetail(params.id);
+  const data = await fetchDetail((await params).id);
   if (!data) notFound();
 
   const { pub, kpts, score } = data;
