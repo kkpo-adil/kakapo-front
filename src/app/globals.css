@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300;1,9..40,400&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Base ─────────────────────────────────────────────────────────────────── */
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-surface-1 text-text-primary font-sans;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(59, 111, 212, 0.06) 0%, transparent 60%);
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background: rgba(59, 111, 212, 0.3);
+    color: #e8eaf0;
+  }
+
+  :focus-visible {
+    outline: 2px solid #3b6fd4;
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight;
+  }
+
+  a {
+    @apply text-accent hover:text-accent-hover transition-colors duration-150;
+  }
+
+  code, pre, .font-mono {
+    
+  }
+}
+
+/* ─── Components ───────────────────────────────────────────────────────────── */
+
+@layer components {
+  /* Divider */
+  .divider {
+    @apply border-t border-border;
+  }
+
+  /* Subtle grid background for hero */
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(42, 51, 73, 0.4) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(42, 51, 73, 0.4) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: -1px -1px;
+  }
+
+  /* Scanline texture for terminal-feel elements */
+  .scanline {
+    background-image: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    );
+  }
+
+  /* Hash display */
+  .hash-display {
+    @apply font-mono text-2xs text-text-muted bg-surface-3 px-2 py-0.5 rounded border border-border;
+    letter-spacing: 0.04em;
+    word-break: break-all;
+  }
+
+  /* Label above a field */
+  .field-label {
+    @apply text-2xs font-mono uppercase tracking-widest text-text-muted mb-1;
+  }
+}
+
+/* ─── Utilities ────────────────────────────────────────────────────────────── */
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #2a3349 transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #2a3349;
+    border-radius: 2px;
+  }
+}
