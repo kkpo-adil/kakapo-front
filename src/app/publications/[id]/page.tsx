@@ -35,9 +35,11 @@ async function fetchDetail(id: string): Promise<{
   }
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const pub = await getPublication((await params).id).catch(
-    () => MOCK_PUBLICATIONS.find((p) => p.id === (await params).id)
+export async function generateMetadata({ params }: PageProps): 
+Promise<Metadata> {
+  const { id } = await params;
+  const pub = await getPublication(id).catch(
+    () => MOCK_PUBLICATIONS.find((p) => p.id === id)
   );
   return {
     title: pub?.title ?? "Publication",
