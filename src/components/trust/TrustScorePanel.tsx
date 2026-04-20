@@ -1,5 +1,5 @@
 import type { TrustScore } from "@/types/api";
-import { Card, CardSection, CardDivider } from "@/components/ui/Card";
+import { Card, CardDivider } from "@/components/ui/Card";
 import { ScoreDial } from "@/components/ui/ScoreDial";
 import { ScoreBar } from "@/components/ui/ScoreBar";
 import { formatDate } from "@/lib/utils";
