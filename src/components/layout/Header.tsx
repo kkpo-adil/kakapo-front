@@ -18,7 +18,6 @@ export function Header() {
 bg-surface-1/90 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-6 h-14 flex items-center 
 justify-between">
-
         <Link href="/" className="flex items-center gap-3 no-underline 
 group">
           <div className="flex items-center gap-2">
@@ -37,13 +36,10 @@ text-text-muted border-l border-border pl-3">
             Scientific Trust Infrastructure
           </span>
         </Link>
-
         <nav className="flex items-center gap-1">
           {NAV_LINKS.map(({ href, label }) => {
-            const active =
-              href === "/"
-                ? pathname === "/"
-                : pathname.startsWith(href);
+            const active = href === "/" ? pathname === "/" : 
+pathname.startsWith(href);
             return (
               <Link
                 key={href}
@@ -51,10 +47,8 @@ text-text-muted border-l border-border pl-3">
                 className={cn(
                   "px-3 py-1.5 rounded text-sm transition-all duration-150 
 no-underline",
-                  active
-                    ? "bg-accent/15 text-accent"
-                    : "text-text-secondary hover:text-text-primary 
-hover:bg-surface-3"
+                  active ? "bg-accent/15 text-accent" : 
+"text-text-secondary hover:text-text-primary hover:bg-surface-3"
                 )}
               >
                 {label}
@@ -66,4 +60,5 @@ hover:bg-surface-3"
     </header>
   );
 }
+
 
