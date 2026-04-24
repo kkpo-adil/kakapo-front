@@ -5,9 +5,10 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS: { href: string; label: string }[] = [
-  { href: "/publications", label: "Publications" },
-  { href: "/verify", label: "Vérifier" },
-  { href: "/graph", label: "Relations" },
+  { href: "/publications", label: "Explorer" },
+  { href: "/verify", label: "Vérifier un KPT" },
+  { href: "/certifier", label: "Certifier" },
+  { href: "/api-access", label: "API" },
 ];
 
 export function Header() {
@@ -25,24 +26,24 @@ export function Header() {
           </div>
           <span className="hidden sm:block text-2xs font-mono text-text-muted border-l border-border pl-3">Scientific Trust Infrastructure</span>
         </Link>
-        <div className="flex items-center gap-3">
-        <a
-          href={`${process.env.NEXT_PUBLIC_API_URL}/auth/orcid/login`}
-          className="text-xs font-mono border border-accent/30 rounded px-3 py-1.5 text-accent hover:bg-accent/10 transition-colors no-underline"
-        >
-          Connexion ORCID
-        </a>
-        <nav className="flex items-center gap-1">
-          {NAV_LINKS.map(({ href, label }) => {
-            const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
-            const cls = active ? "bg-accent/15 text-accent" : "text-text-secondary hover:text-text-primary hover:bg-surface-3";
-            return (
-              <Link key={href} href={href} className={cn("px-3 py-1.5 rounded text-sm transition-all duration-150 no-underline", cls)}>
-                {label}
-              </Link>
-            );
-          })}
-        </nav>
+        <div className="flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-1 mr-3">
+            {NAV_LINKS.map(({ href, label }) => {
+              const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
+              const cls = active ? "bg-accent/15 text-accent" : "text-text-secondary hover:text-text-primary hover:bg-surface-3";
+              return (
+                <Link key={href} href={href} className={cn("px-3 py-1.5 rounded text-sm transition-all duration-150 no-underline", cls)}>
+                  {label}
+                </Link>
+              );
+            })}
+          </nav>
+          <a
+            href={`${process.env.NEXT_PUBLIC_API_URL}/auth/orcid/login`}
+            className="text-xs font-mono border border-accent/40 rounded px-3 py-1.5 text-accent hover:bg-accent/10 transition-colors no-underline"
+          >
+            Connexion
+          </a>
         </div>
       </div>
     </header>
