@@ -37,20 +37,11 @@ export default function CertifierPage() {
     setLoadingCrossref(true);
     setError("");
     try {
-      const r = await fetch(`https://api.crossref.org/works/${encodeURIComponent(doi)}`);
+      const encoded = encodeURIComponent(doi);
+      const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/publications/crossref/${encoded}`);
       if (!r.ok) throw new Error("DOI introuvable sur CrossRef");
       const data = await r.json();
-      const work = data.message;
-      const title = work.title?.[0] || "";
-      const abstract = work.abstract || "";
-      const authors = (work.author || []).map((a: { given?: string; family?: string }) => ({
-        name: `${a.given || ""} ${a.family || ""}`.trim(),
-      }));
-      const journal = work["container-title"]?.[0] || "";
-      const institution = work.author?.[0]?.affiliation?.[0]?.name || "";
-      const parts = work.published?.["date-parts"]?.[0] || [];
-      const published_at = parts.length ? `${parts[0]}-${String(parts[1] || 1).padStart(2, "0")}-01` : null;
-      setCrossref({ title, abstract, authors, journal, institution, published_at, doi });
+      setCrossref({ ...data, doi });
       setStep("preview");
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : "Erreur CrossRef");
