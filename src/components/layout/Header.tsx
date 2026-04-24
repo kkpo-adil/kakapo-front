@@ -25,6 +25,13 @@ export function Header() {
           </div>
           <span className="hidden sm:block text-2xs font-mono text-text-muted border-l border-border pl-3">Scientific Trust Infrastructure</span>
         </Link>
+        <div className="flex items-center gap-3">
+        <a
+          href={`${process.env.NEXT_PUBLIC_API_URL}/auth/orcid/login`}
+          className="text-xs font-mono border border-accent/30 rounded px-3 py-1.5 text-accent hover:bg-accent/10 transition-colors no-underline"
+        >
+          Connexion ORCID
+        </a>
         <nav className="flex items-center gap-1">
           {NAV_LINKS.map(({ href, label }) => {
             const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -36,6 +43,7 @@ export function Header() {
             );
           })}
         </nav>
+        </div>
       </div>
     </header>
   );
