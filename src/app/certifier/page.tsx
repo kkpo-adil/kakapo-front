@@ -107,7 +107,7 @@ export default function CertifierPage() {
           <div>
             <h1 className="text-2xl font-display text-text-primary mb-3">Certifier une publication</h1>
             <p className="text-sm text-text-secondary leading-relaxed">
-              Entrez le DOI de votre publication. KAKAPO récupère automatiquement les métadonnées via CrossRef, calcule le hash SHA-256 de votre PDF et émet un KPT cryptographique.
+              Gratuit pour les chercheurs identifiés. Entrez le DOI de votre publication — KAKAPO enrichit automatiquement les métadonnées via CrossRef, calcule le hash SHA-256 de votre PDF et émet un KPT cryptographique.
             </p>
           </div>
 
