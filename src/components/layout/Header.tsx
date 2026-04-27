@@ -72,7 +72,7 @@ export function Header() {
           </nav>
           {user ? (
             <div className="flex items-center gap-3">
-              <Link href="/profile" className="flex items-center gap-2 border border-accent/20 rounded px-3 py-1.5 bg-accent/5 no-underline hover:bg-accent/10 transition-colors">
+              <Link href="/dashboard" className="flex items-center gap-2 border border-accent/20 rounded px-3 py-1.5 bg-accent/5 no-underline hover:bg-accent/10 transition-colors">
                 <span className="w-1.5 h-1.5 rounded-full bg-accent" />
                 <span className="text-xs font-mono text-text-primary">{user.name}</span>
               </Link>
