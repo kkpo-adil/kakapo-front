@@ -43,11 +43,11 @@ export default async function HomePage() {
 
   return (
     <div>
-      <section className="relative overflow-hidden border-b border-border">
+      <section className="relative overflow-hidden border-b border-border bg-surface-2">
         <div className="absolute inset-0 grid-bg opacity-60 pointer-events-none" />
         <div className="relative max-w-7xl mx-auto px-6 py-20 sm:py-28">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 border border-accent/30 bg-accent/10 rounded px-3 py-1 mb-6">
+            <div className="inline-flex items-center gap-2 border border-accent/30 bg-accent/10 rounded-full px-4 py-1 mb-6">
               <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
               <span className="text-2xs font-mono text-accent uppercase tracking-widest">Scientific Trust Infrastructure</span>
             </div>
@@ -59,33 +59,23 @@ export default async function HomePage() {
             </p>
             <div className="flex flex-wrap gap-3">
               <Link href="/verify" className="no-underline inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-sm px-5 py-2.5 rounded transition-colors">
-                Vérifier un KPT
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
+                Vérifier un KPT →
               </Link>
-              <Link href="/publications" className="no-underline inline-flex items-center gap-2 bg-surface-3 hover:bg-surface-4 text-text-secondary hover:text-text-primary text-sm px-5 py-2.5 rounded border border-border transition-all">
+              <Link href="/publications" className="no-underline inline-flex items-center gap-2 bg-surface-2 hover:bg-surface-3 text-text-secondary hover:text-text-primary text-sm px-5 py-2.5 rounded border border-border transition-all">
                 Explorer les publications
               </Link>
             </div>
           </div>
         </div>
-        <div className="absolute right-8 top-1/2 -translate-y-1/2 hidden xl:flex gap-4 opacity-20 pointer-events-none">
-          {[0.92, 0.67, 0.41].map((s, i) => (
-            <div key={i} className="w-16 h-16 rounded-full border-2 flex items-center justify-center" style={{ borderColor: s > 0.7 ? "#22c55e" : s > 0.4 ? "#f59e0b" : "#ef4444" }}>
-              <span className="text-xs font-mono" style={{ color: s > 0.7 ? "#22c55e" : s > 0.4 ? "#f59e0b" : "#ef4444" }}>{Math.round(s * 100)}%</span>
-            </div>
-          ))}
-        </div>
       </section>
 
-      <section className="border-b border-border bg-surface-2">
+      <section className="border-b border-border bg-surface-3">
         <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap gap-8 items-center">
           {[
             { value: recent.length.toString(), label: "publications indexées" },
             { value: activeKpts.toString(), label: "KPT actifs" },
             { value: averageScore !== null ? `${averageScore}%` : "—", label: "score moyen" },
-            { value: "1.0", label: "Trust Engine" },
+            { value: "3.0", label: "Trust Engine" },
           ].map(({ value, label }) => (
             <div key={label} className="flex items-baseline gap-2">
               <span className="text-lg font-mono font-semibold text-text-primary tabular-nums">{value}</span>
@@ -99,78 +89,62 @@ export default async function HomePage() {
       </section>
 
       <section className="max-w-7xl mx-auto px-6 py-14">
-        <span className="text-2xs font-mono text-accent uppercase tracking-widest">Les 3 preuves Kakapo</span>
-        <h2 className="text-xl font-display text-text-primary mt-2 mb-8">Une publication ne doit plus seulement être accessible. Elle doit être vérifiable.</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border rounded-lg overflow-hidden">
           {[
-            { title: "KPT", sub: "Proof of Knowledge Token", desc: "Empreinte cryptographique qui certifie l'antériorité, l'intégrité et le statut d'une publication. Non transférable, horodaté, vérifiable publiquement." },
-            { title: "Trust Score", sub: "Score de fiabilité", desc: "Indice de confiance calculé sur des signaux vérifiables : source, complétude, fraîcheur, citations et données associées." },
-            { title: "API", sub: "Accès machine", desc: "Interface conçue pour que les IA et systèmes R&D vérifient une source avant de l'exploiter. Pay-per-query, latence < 200ms." },
+            {
+              href: "/about/kpt",
+              title: "KPT",
+              sub: "Proof of Knowledge Token",
+              desc: "Empreinte cryptographique qui certifie l'antériorité, l'intégrité et le statut d'une publication. Non transférable, horodaté, vérifiable publiquement.",
+            },
+            {
+              href: "/about/trust-score",
+              title: "Trust Score",
+              sub: "Score de fiabilité",
+              desc: "Indice de confiance calculé sur des signaux vérifiables : source, données, fraîcheur, citations et cohérence structurelle.",
+            },
+            {
+              href: "/about/api",
+              title: "API",
+              sub: "Accès machine",
+              desc: "Interface conçue pour que les IA et systèmes R&D vérifient une source avant de l'exploiter. Pay-per-query, latence < 200ms.",
+            },
           ].map((item) => (
-            <div key={item.title} className="bg-surface-1 p-6">
-              <h3 className="text-base font-display text-text-primary mb-1">{item.title}</h3>
+            <Link key={item.title} href={item.href} className="no-underline group block bg-surface-2 hover:bg-surface-3 p-6 transition-all">
+              <h3 className="text-base font-display text-text-primary mb-1 group-hover:text-accent transition-colors">{item.title}</h3>
               <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-4">{item.sub}</p>
-              <p className="text-xs text-text-muted leading-relaxed">{item.desc}</p>
-            </div>
+              <p className="text-xs text-text-muted leading-relaxed mb-4">{item.desc}</p>
+              <span className="text-xs font-mono text-accent opacity-0 group-hover:opacity-100 transition-opacity">En savoir plus →</span>
+            </Link>
           ))}
         </div>
       </section>
 
-      <section className="border-t border-border bg-surface-2">
+      <section className="border-t border-b border-border bg-surface-3">
         <div className="max-w-7xl mx-auto px-6 py-14">
-          <span className="text-2xs font-mono text-accent uppercase tracking-widest">Cas d'usage</span>
-          <h2 className="text-xl font-display text-text-primary mt-2 mb-8">Une même infrastructure, trois usages prioritaires.</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              { title: "Chercheur", desc: "Certifier une publication, prouver son antériorité et rendre son travail vérifiable par n'importe quel système.", href: `${process.env.NEXT_PUBLIC_API_URL}/auth/orcid/login`, cta: "Se connecter avec ORCID", external: true },
-              { title: "Labo / Université", desc: "Suivre les travaux produits par une équipe et ajouter une couche de traçabilité aux dépôts scientifiques institutionnels.", href: "/publications", cta: "Voir les publications", external: false },
-              { title: "IA / API", desc: "Interroger Kakapo pour vérifier une publication, un KPT ou un score de fiabilité avant réutilisation dans un pipeline.", href: "/verify", cta: "Tester une vérification", external: false },
-            ].map((item) => (
-              item.external ? (
-                <a key={item.title} href={item.href} className="no-underline group block border border-border bg-surface-1 hover:bg-surface-3 hover:border-border-strong rounded p-6 transition-all">
-                  <h3 className="text-base font-display text-text-primary mb-3">{item.title}</h3>
-                  <p className="text-xs text-text-muted leading-relaxed mb-5">{item.desc}</p>
-                  <span className="text-xs font-mono text-accent group-hover:text-accent-hover">{item.cta} →</span>
-                </a>
-              ) : (
-                <Link key={item.title} href={item.href} className="no-underline group block border border-border bg-surface-1 hover:bg-surface-3 hover:border-border-strong rounded p-6 transition-all">
-                  <h3 className="text-base font-display text-text-primary mb-3">{item.title}</h3>
-                  <p className="text-xs text-text-muted leading-relaxed mb-5">{item.desc}</p>
-                  <span className="text-xs font-mono text-accent group-hover:text-accent-hover">{item.cta} →</span>
-                </Link>
-              )
-            ))}
+          <div className="flex items-baseline justify-between mb-6">
+            <h2 className="text-xl font-display text-text-primary">Publications certifiées récentes</h2>
+            <Link href="/publications" className="text-xs font-mono text-accent hover:text-accent-hover">Tout voir →</Link>
           </div>
+          {recent.length === 0 ? (
+            <div className="text-center py-16 text-text-muted text-sm">Aucune publication disponible.</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {recent.map((pub) => (
+                <PublicationCard key={pub.id} publication={pub} trustScore={scores.get(pub.id)} kpt={kpts.get(pub.id)} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
       <section className="max-w-7xl mx-auto px-6 py-14">
-        <div className="flex items-baseline justify-between mb-6">
-          <div>
-            <span className="text-2xs font-mono text-accent uppercase tracking-widest">Démonstration vivante</span>
-            <h2 className="text-xl font-display text-text-primary mt-2">Publications certifiées récentes</h2>
-          </div>
-          <Link href="/publications" className="text-xs font-mono text-accent hover:text-accent-hover">Tout voir →</Link>
-        </div>
-        {recent.length === 0 ? (
-          <div className="text-center py-16 text-text-muted text-sm">Aucune publication disponible.</div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {recent.map((pub) => (
-              <PublicationCard key={pub.id} publication={pub} trustScore={scores.get(pub.id)} kpt={kpts.get(pub.id)} />
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section className="border-t border-border bg-surface-2">
-        <div className="max-w-7xl mx-auto px-6 py-14">
-          <div className="max-w-3xl">
-            <span className="text-2xs font-mono text-accent uppercase tracking-widest">Positionnement</span>
-            <h2 className="text-2xl font-display text-text-primary mt-3 mb-4">Kakapo n'est pas une revue, ni un réseau social scientifique.</h2>
-            <p className="text-sm text-text-secondary leading-relaxed">C'est une couche de vérification : une infrastructure qui rend les connaissances scientifiques traçables, contrôlables et exploitables par les humains comme par les systèmes d'intelligence artificielle.</p>
-          </div>
-        </div>
+        <h2 className="text-2xl font-display text-text-primary mb-4 max-w-2xl leading-snug">
+          Kakapo n'est pas une revue, ni un réseau social scientifique.
+        </h2>
+        <p className="text-sm text-text-secondary leading-relaxed max-w-2xl">
+          C'est une couche de vérification : une infrastructure qui rend les connaissances scientifiques traçables, contrôlables et exploitables par les humains comme par les systèmes d'intelligence artificielle.
+        </p>
       </section>
     </div>
   );
