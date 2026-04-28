@@ -11,9 +11,10 @@ interface PublisherDashboard {
     revenue_share_pct: number;
   };
   balance: {
-    total_earned: number;
-    total_paid_out: number;
-    pending_payout: number;
+    revenue_generated: number;
+    revenue_share_paid: number;
+    kpt_costs_pending: number;
+    revenue_share_pending: number;
   };
   stats: {
     total_kpts: number;
@@ -118,9 +119,9 @@ export default function PublisherDashboardPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border">
             {[
-              { label: "Revenus en attente", value: `€${data.balance.pending_payout.toFixed(2)}`, highlight: true },
-              { label: "Revenus totaux générés", value: `€${data.balance.total_earned.toFixed(2)}` },
-              { label: "Reversements effectués", value: `€${data.balance.total_paid_out.toFixed(2)}` },
+              { label: "Revenus en attente", value: `€${data.balance.revenue_share_pending.toFixed(2)}`, highlight: true },
+              { label: "Revenus générés", value: `€${data.balance.revenue_generated.toFixed(2)}` },
+              { label: "Reversements effectués", value: `€${data.balance.revenue_share_paid.toFixed(2)}` },
             ].map(({ label, value, highlight }) => (
               <div key={label} className="bg-surface-1 p-6">
                 <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mb-2">{label}</p>
