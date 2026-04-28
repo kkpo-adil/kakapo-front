@@ -10,6 +10,7 @@ const NAV_LINKS: { href: string; label: string }[] = [
   { href: "/verify", label: "Vérifier un KPT" },
   { href: "/certifier", label: "Certifier" },
   { href: "/api-access", label: "API" },
+  { href: "/publisher", label: "Éditeur" },
 ];
 
 function decodeJWT(token: string): { name?: string; orcid?: string } | null {

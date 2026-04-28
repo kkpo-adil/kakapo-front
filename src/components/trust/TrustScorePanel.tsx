@@ -1,92 +1,88 @@
+"use client";
+
 import type { TrustScore } from "@/types/api";
-import { Card, CardDivider } from "@/components/ui/Card";
-import { ScoreDial } from "@/components/ui/ScoreDial";
-import { ScoreBar } from "@/components/ui/ScoreBar";
-import { formatDate } from "@/lib/utils";
 
 interface TrustScorePanelProps {
-  score: TrustScore;
+  score: TrustScore | null;
 }
 
-const COMPONENTS: {
-  key: keyof TrustScore;
-  label: string;
-  weight: string;
-  description: string;
-}[] = [
-  {
-    key: "source_score",
-    label: "Source",
-    weight: "20%",
-    description: "Réputation de la source de dépôt (HAL, arXiv, direct…)",
-  },
-  {
-    key: "completeness_score",
-    label: "Complétude",
-    weight: "30%",
-    description: "Présence des champs requis : titre, résumé, DOI, auteurs, institution",
-  },
-  {
-    key: "freshness_score",
-    label: "Fraîcheur",
-    weight: "20%",
-    description: "Ancienneté de la publication (décroissance sur 5 ans)",
-  },
-  {
-    key: "citation_score",
-    label: "Citabilité",
-    weight: "15%",
-    description: "Présence d'un DOI (proxy V1 ; graphe de citations en V2)",
-  },
-  {
-    key: "dataset_score",
-    label: "Dataset",
-    weight: "15%",
-    description: "Jeu de données associé déclaré et hashé",
-  },
+const COMPONENTS = [
+  { key: "source_score", label: "Source", weight: "35%", desc: "Crédibilité de la source" },
+  { key: "completeness_score", label: "Données", weight: "25%", desc: "Intégrité des données" },
+  { key: "citation_score", label: "Citations", weight: "20%", desc: "Réseau de citations" },
+  { key: "freshness_score", label: "Fraîcheur", weight: "20%", desc: "Pertinence temporelle" },
 ];
 
-export function TrustScorePanel({ score }: TrustScorePanelProps) {
+function interpret(score: number): { label: string; color: string } {
+  if (score >= 0.90) return { label: "Validé", color: "text-trust-high" };
+  if (score >= 0.70) return { label: "Solide", color: "text-trust-high" };
+  if (score >= 0.50) return { label: "Incertain", color: "text-trust-mid" };
+  return { label: "Faible", color: "text-trust-low" };
+}
+
+function ScoreArc({ score }: { score: number }) {
+  const pct = Math.round(score * 100);
+  const r = 40;
+  const circ = 2 * Math.PI * r;
+  const dash = (pct / 100) * circ * 0.75;
+  const gap = circ - dash;
+  const { label, color } = interpret(score);
   return (
-    <Card padding="md">
-      {/* Global score */}
-      <div className="flex items-center gap-6 mb-5">
-        <ScoreDial score={score.score} size={88} />
-        <div className="flex-1 space-y-1.5">
-          <p className="text-xs text-text-muted">
-            Score calculé automatiquement selon les métadonnées vérifiables de la publication.
-          </p>
-          <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-2xs font-mono text-text-muted">
-              Version moteur : {score.scoring_version}
-            </span>
-            <span className="text-2xs font-mono text-text-muted">
-              Calculé le {formatDate(score.scored_at)}
-            </span>
-          </div>
+    <div className="flex items-center gap-6">
+      <div className="relative w-24 h-24 flex-shrink-0">
+        <svg viewBox="0 0 100 100" className="w-full h-full -rotate-[135deg]">
+          <circle cx="50" cy="50" r={r} fill="none" stroke="currentColor" strokeWidth="8"
+            className="text-surface-3" strokeDasharray={`${circ * 0.75} ${circ * 0.25}`} strokeLinecap="round" />
+          <circle cx="50" cy="50" r={r} fill="none" strokeWidth="8"
+            stroke={score >= 0.7 ? "#22c55e" : score >= 0.5 ? "#f59e0b" : "#ef4444"}
+            strokeDasharray={`${dash} ${gap + circ * 0.25}`} strokeLinecap="round" />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <span className="text-xl font-mono font-bold text-text-primary">{pct}%</span>
+          <span className={`text-2xs font-mono uppercase tracking-widest ${color}`}>{label}</span>
         </div>
       </div>
+      <div>
+        <p className="text-xs text-text-secondary leading-relaxed mb-1">
+          Score calculé sur des signaux vérifiables — pas une opinion.
+        </p>
+        <p className="text-2xs font-mono text-text-muted">Version moteur : 2.0</p>
+      </div>
+    </div>
+  );
+}
 
-      <CardDivider />
+export function TrustScorePanel({ score }: TrustScorePanelProps) {
+  if (!score) return null;
 
-      {/* Components breakdown */}
-      <div className="space-y-4 mt-4">
-        {COMPONENTS.map(({ key, label, weight, description }) => {
-          const value = score[key] as number;
+  return (
+    <div className="border border-border rounded p-6 space-y-6">
+      <div>
+        <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-4">Score de fiabilité</p>
+        <ScoreArc score={score.score} />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        {COMPONENTS.map(({ key, label, weight, desc }) => {
+          const val = score[key as keyof TrustScore] as number ?? 0;
           return (
-            <div key={key}>
-              <div className="flex items-baseline justify-between mb-1">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-xs text-text-secondary">{label}</span>
-                  <span className="text-2xs font-mono text-text-muted">({weight})</span>
-                </div>
+            <div key={key} className="bg-surface-2 rounded p-3">
+              <div className="flex justify-between items-baseline mb-1">
+                <span className="text-2xs font-mono text-text-muted uppercase tracking-widest">{label}</span>
+                <span className="text-2xs font-mono text-text-muted">{weight}</span>
               </div>
-              <ScoreBar score={value} height="sm" />
-              <p className="text-2xs text-text-muted mt-1">{description}</p>
+              <p className="text-lg font-mono font-semibold text-text-primary mb-1">{Math.round(val * 100)}%</p>
+              <div className="h-1 bg-surface-3 rounded-full overflow-hidden">
+                <div className="h-full rounded-full transition-all"
+                  style={{
+                    width: `${val * 100}%`,
+                    backgroundColor: val >= 0.7 ? "#22c55e" : val >= 0.5 ? "#f59e0b" : "#ef4444"
+                  }} />
+              </div>
+              <p className="text-2xs text-text-muted mt-1">{desc}</p>
             </div>
           );
         })}
       </div>
-    </Card>
+    </div>
   );
 }

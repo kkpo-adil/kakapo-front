@@ -144,33 +144,6 @@ export default async function PublicationDetailPage({ params }: PageProps) {
             <div>
               <p className="field-label px-1 mb-2">Score de fiabilité</p>
               <TrustScorePanel score={score} />
-        {score && (
-          <div className="border border-border rounded p-5 mt-4">
-            <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-4">Breakdown Trust Score V2</p>
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { label: "Source", score: score.source_score, weight: "35%", desc: "Crédibilité de la source" },
-                { label: "Données", score: score.completeness_score, weight: "25%", desc: "Intégrité des données" },
-                { label: "Citations", score: score.citation_score, weight: "20%", desc: "Réseau de citations" },
-                { label: "Fraîcheur", score: score.freshness_score, weight: "20%", desc: "Pertinence temporelle" },
-              ].map(({ label, score: s, weight, desc }) => (
-                <div key={label} className="bg-surface-2 rounded p-3">
-                  <div className="flex justify-between items-baseline mb-1">
-                    <span className="text-2xs font-mono text-text-muted uppercase tracking-widest">{label}</span>
-                    <span className="text-2xs font-mono text-text-muted">{weight}</span>
-                  </div>
-                  <div className="flex items-baseline gap-2 mb-1">
-                    <span className="text-lg font-mono font-semibold text-text-primary">{Math.round(s * 100)}%</span>
-                  </div>
-                  <div className="h-1 bg-surface-3 rounded-full overflow-hidden">
-                    <div className="h-full bg-accent rounded-full" style={{ width: `${s * 100}%` }} />
-                  </div>
-                  <p className="text-2xs text-text-muted mt-1">{desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
         <ReviewPanel publicationId={pub.id} />
             </div>
           ) : (
