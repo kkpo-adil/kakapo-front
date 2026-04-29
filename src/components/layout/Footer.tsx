@@ -17,6 +17,22 @@ export function Footer() {
             </p>
           </div>
           <div>
+            <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mb-3">Utilisateurs</p>
+            <div className="space-y-2">
+              {[
+                { href: "/certifier", label: "Chercheurs" },
+                { href: "/publisher", label: "Éditeurs" },
+                { href: "/llm", label: "LLM" },
+                { href: "/pharma", label: "Pharma & Biotech" },
+                { href: "/legal-finance", label: "Legal & Finance" },
+                { href: "/institutions", label: "Institutions" },
+                { href: "/publications", label: "Explorer" },
+              ].map(({ href, label }) => (
+                <Link key={href} href={href} className="block text-xs text-text-muted hover:text-accent no-underline transition-colors">{label}</Link>
+              ))}
+            </div>
+          </div>
+          <div>
             <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mb-3">Produit</p>
             <div className="space-y-2">
               {[
@@ -24,19 +40,6 @@ export function Footer() {
                 { href: "/about/trust-score", label: "Trust Score" },
                 { href: "/about/api", label: "API" },
                 { href: "/verify", label: "Vérifier un KPT" },
-              ].map(({ href, label }) => (
-                <Link key={href} href={href} className="block text-xs text-text-muted hover:text-accent no-underline transition-colors">{label}</Link>
-              ))}
-            </div>
-          </div>
-          <div>
-            <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mb-3">Utilisateurs</p>
-            <div className="space-y-2">
-              {[
-                { href: "/certifier", label: "Chercheurs" },
-                { href: "/publisher", label: "Éditeurs" },
-                { href: "/api-access", label: "Clients IA / API" },
-                { href: "/publications", label: "Explorer" },
               ].map(({ href, label }) => (
                 <Link key={href} href={href} className="block text-xs text-text-muted hover:text-accent no-underline transition-colors">{label}</Link>
               ))}

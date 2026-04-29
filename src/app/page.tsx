@@ -107,7 +107,7 @@ export default async function HomePage() {
               href: "/about/api",
               title: "API",
               sub: "Accès machine",
-              desc: "Interface conçue pour que les IA et systèmes R&D vérifient une source avant de l'exploiter. Pay-per-query, latence < 200ms.",
+              desc: "Interface conçue pour que les IA et systèmes R&D vérifient une source avant de l'exploiter. Vérification par Verified Operation, latence < 200ms.",
             },
           ].map((item) => (
             <Link key={item.title} href={item.href} className="no-underline group block bg-surface-2 hover:bg-surface-3 p-6 transition-all">
