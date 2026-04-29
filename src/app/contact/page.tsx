@@ -34,7 +34,7 @@ export default function ContactPage() {
             className="flex items-center gap-2 text-sm font-mono text-accent hover:text-accent-hover no-underline">
             partnerships@kakapo.io →
           </a>
-          <p className="text-2xs text-text-muted font-mono">Réponse sous 48h — Premier éditeur : conditions privilégiées 80/20 pendant 12 mois</p>
+          <p className="text-2xs text-text-muted font-mono">Réponse sous 48h</p>
         </div>
       </div>
     </div>
