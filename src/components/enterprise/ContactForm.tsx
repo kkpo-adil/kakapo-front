@@ -20,7 +20,7 @@ interface ContactFormProps {
   submitLabel: string;
 }
 
-export function ContactForm({ segment, recipientEmail, subjectPrefix, fields, submitLabel }: ContactFormProps) {
+export function ContactForm({ segment: _segment, recipientEmail, subjectPrefix, fields, submitLabel }: ContactFormProps) {
   const [values, setValues] = useState<Record<string, string | string[]>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [sent, setSent] = useState(false);
