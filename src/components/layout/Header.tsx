@@ -123,7 +123,7 @@ export function Header() {
                         </div>
                       </a>
 
-                      <a href="mailto:partnerships@kakapo.io"
+                      <Link href="/contact"
                         className="flex items-start gap-3 p-3 rounded-md hover:bg-surface-3 no-underline transition-colors group"
                         onClick={() => setDropdownOpen(false)}>
                         <div className="w-7 h-7 rounded bg-trust-high/10 flex items-center justify-center flex-shrink-0 mt-0.5">
@@ -131,9 +131,9 @@ export function Header() {
                         </div>
                         <div>
                           <p className="text-xs font-medium text-text-primary group-hover:text-accent transition-colors">Éditeur</p>
-                          <p className="text-2xs text-text-muted mt-0.5 leading-relaxed">Partenariat corpus — nous contacter</p>
+                          <p className="text-2xs text-text-muted mt-0.5 leading-relaxed">Partenariat corpus — conditions & contact</p>
                         </div>
-                      </a>
+                      </Link>
 
                       <Link href="/api-access"
                         className="flex items-start gap-3 p-3 rounded-md hover:bg-surface-3 no-underline transition-colors group"
