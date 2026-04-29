@@ -162,7 +162,7 @@ export default function PublisherDashboardPage() {
                     €{data.stats.estimated_total_revenue.toFixed(2)}
                   </span>
                 </div>
-                <p className="text-2xs text-text-muted">Basé sur {data.publisher.revenue_share_pct}% du pay-per-query à €0.002/requête</p>
+                <p className="text-2xs text-text-muted">Basé sur {data.publisher.revenue_share_pct}% des Verified Operations à €0.002/VO</p>
               </div>
             </div>
             <div className="border border-border rounded p-5">
