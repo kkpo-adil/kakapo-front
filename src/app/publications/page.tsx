@@ -1,182 +1,230 @@
-import type { Metadata } from "next";
-import { Suspense } from "react";
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { getPublications, getTrustScore, getKPTsForPublication } from "@/lib/api";
-import { MOCK_PUBLICATIONS, MOCK_TRUST_SCORES, MOCK_KPTS } from "@/lib/mock-data";
 import { PublicationCard } from "@/components/publication/PublicationCard";
-import { PublicationFilters } from "@/components/publication/PublicationFilters";
-import { EmptyState } from "@/components/ui/EmptyState";
-import type { Publication, TrustScore, KPT, PublicationSource } from "@/types/api";
-
-
-export const metadata: Metadata = {
-  title: "Publications",
-  description: "Liste des publications scientifiques certifiées par KAKAPO.",
-};
+import type { Publication, TrustScore, KPT } from "@/types/api";
 
 const PAGE_SIZE = 12;
 
-interface PageProps {
-  searchParams: { page?: string; source?: string };
-}
+const SOURCES = [
+  { value: "", label: "Toutes sources" },
+  { value: "arxiv", label: "arXiv" },
+  { value: "hal", label: "HAL" },
+  { value: "direct", label: "Dépôt direct" },
+  { value: "nature", label: "Nature" },
+  { value: "pubmed", label: "PubMed" },
+];
 
-async function fetchPublicationsPage(searchParams: PageProps["searchParams"]): Promise<{
+interface PubData {
   pubs: Publication[];
   total: number;
-  scores: Map<string, TrustScore>;
-  kpts: Map<string, KPT>;
-  fromMock: boolean;
-}> {
-  const page   = Math.max(1, parseInt(searchParams.page ?? "1"));
-  const skip   = (page - 1) * PAGE_SIZE;
-  const source = searchParams.source as PublicationSource | undefined;
-
-  try {
-    const list = await getPublications({ skip, limit: PAGE_SIZE, source });
-    const pubs = list.items;
-
-    const [scoresArr, kptsArr] = await Promise.all([
-      Promise.all(pubs.map((p) => getTrustScore(p.id).catch(() => null))),
-      Promise.all(pubs.map((p) => getKPTsForPublication(p.id).catch(() => []))),
-    ]);
-
-    const scores = new Map<string, TrustScore>();
-    const kpts   = new Map<string, KPT>();
-    pubs.forEach((p, i) => {
-      const s = scoresArr[i];
-      if (s) scores.set(p.id, s);
-      const k = kptsArr[i];
-      const active = k.find((x) => x.status === "active") ?? k[0];
-      if (active) kpts.set(p.id, active);
-    });
-
-    return { pubs, total: list.total, scores, kpts, fromMock: false };
-  } catch {
-    const filtered = source
-      ? MOCK_PUBLICATIONS.filter((p) => p.source === source)
-      : MOCK_PUBLICATIONS;
-
-    const scores = new Map<string, TrustScore>(
-      MOCK_TRUST_SCORES.map((s) => [s.publication_id, s])
-    );
-    const kpts = new Map<string, KPT>(
-      MOCK_KPTS.map((k) => [k.publication_id, k])
-    );
-    return { pubs: filtered, total: filtered.length, scores, kpts, fromMock: true };
-  }
+  scores: Record<string, TrustScore>;
+  kpts: Record<string, KPT>;
 }
 
-export default async function PublicationsPage({ searchParams }: PageProps) {
-  const page  = Math.max(1, parseInt(searchParams.page ?? "1"));
-  const { pubs, total, scores, kpts, fromMock } = await fetchPublicationsPage(searchParams);
-  const totalPages = Math.ceil(total / PAGE_SIZE);
+export default function PublicationsPage() {
+  const [source, setSource] = useState("");
+  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const [page, setPage] = useState(1);
+  const [data, setData] = useState<PubData>({ pubs: [], total: 0, scores: {}, kpts: {} });
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<{ total: number; certified: number; indexed: number } | null>(null);
+
+  useEffect(() => {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/publications/stats`)
+      .then(r => r.json())
+      .then(d => setStats(d))
+      .catch(() => null);
+  }, []);
+
+  const fetchData = useCallback(async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({
+        skip: String((page - 1) * PAGE_SIZE),
+        limit: String(PAGE_SIZE),
+      });
+      if (source) params.set("source", source);
+      if (search) params.set("search", search);
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/publications/?${params}`);
+      const list = await res.json();
+      const pubs: Publication[] = list.items || list || [];
+      const total: number = list.total ?? pubs.length;
+
+      const [scoresArr, kptsArr] = await Promise.all([
+        Promise.all(pubs.map(p =>
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/trust/score/${p.id}`)
+            .then(r => r.ok ? r.json() : null).catch(() => null)
+        )),
+        Promise.all(pubs.map(p =>
+          fetch(`${process.env.NEXT_PUBLIC_API_URL}/kpt/publication/${p.id}`)
+            .then(r => r.ok ? r.json() : null).catch(() => null)
+        )),
+      ]);
+
+      const scores: Record<string, TrustScore> = {};
+      const kpts: Record<string, KPT> = {};
+      pubs.forEach((p, i) => {
+        if (scoresArr[i]) scores[p.id] = scoresArr[i];
+        const k = kptsArr[i];
+        if (k) {
+          const active = Array.isArray(k) ? (k.find((x: KPT) => x.status === "active") ?? k[0]) : k;
+          if (active) kpts[p.id] = active;
+        }
+      });
+
+      setData({ pubs, total, scores, kpts });
+    } catch {
+      setData({ pubs: [], total: 0, scores: {}, kpts: {} });
+    } finally {
+      setLoading(false);
+    }
+  }, [page, source, search]);
+
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    setSearch(searchInput);
+    setPage(1);
+  }
+
+  function handleSource(val: string) {
+    setSource(val);
+    setPage(1);
+  }
+
+  const totalPages = Math.max(1, Math.ceil(data.total / PAGE_SIZE));
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
-      {/* Header */}
       <div className="mb-8">
-        <div className="flex items-baseline justify-between gap-4 mb-2">
-          <h1 className="text-2xl font-display text-text-primary">Publications</h1>
-          {fromMock && (
-            <span className="text-2xs font-mono text-trust-mid border border-trust-mid/30 rounded px-2 py-0.5">
-              Démo
-            </span>
+        <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">Index KAKAPO</p>
+        <div className="flex items-baseline justify-between flex-wrap gap-4">
+          <h1 className="text-2xl font-display text-text-primary">Publications certifiées</h1>
+          {stats && (
+            <div className="flex items-center gap-4">
+              <span className="text-xs font-mono text-text-muted">{stats.total} publications</span>
+              <span className="text-xs font-mono text-trust-high">{stats.certified} certifiées</span>
+              <span className="text-xs font-mono text-accent">{stats.indexed} indexées</span>
+            </div>
           )}
         </div>
-        <p className="text-sm text-text-muted">
-          Publications scientifiques certifiées et scorées par KAKAPO.
-        </p>
       </div>
 
-      {/* Filters */}
-      <div className="mb-6">
-        <Suspense fallback={null}>
-          <PublicationFilters total={total} />
-        </Suspense>
+      <form onSubmit={handleSearch} className="mb-6">
+        <div className="flex gap-2">
+          <input
+            value={searchInput}
+            onChange={e => setSearchInput(e.target.value)}
+            placeholder="Rechercher par titre, auteur, DOI..."
+            className="flex-1 bg-surface-2 border border-border rounded px-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent transition-colors"
+          />
+          <button type="submit" className="bg-accent hover:bg-accent-hover text-white text-sm font-mono px-5 py-2.5 rounded transition-colors cursor-pointer">
+            Rechercher
+          </button>
+          {search && (
+            <button type="button" onClick={() => { setSearch(""); setSearchInput(""); setPage(1); }}
+              className="border border-border text-text-muted hover:text-text-primary text-sm font-mono px-4 py-2.5 rounded transition-colors bg-transparent cursor-pointer">
+              ✕
+            </button>
+          )}
+        </div>
+      </form>
+
+      <div className="flex flex-wrap gap-2 mb-8">
+        {SOURCES.map(s => (
+          <button
+            key={s.value}
+            onClick={() => handleSource(s.value)}
+            className={`text-xs font-mono px-3 py-1.5 rounded border transition-colors cursor-pointer ${
+              source === s.value
+                ? "bg-accent text-white border-accent"
+                : "border-border text-text-secondary hover:border-accent hover:text-accent"
+            }`}
+          >
+            {s.label}
+          </button>
+        ))}
       </div>
 
-      {/* Grid */}
-      {pubs.length === 0 ? (
-        <EmptyState
-          title="Aucune publication trouvée"
-          description="Essayez de modifier les filtres ou revenez plus tard."
-        />
+      {loading ? (
+        <div className="text-center py-20">
+          <div className="text-xs font-mono text-text-muted animate-pulse">Chargement...</div>
+        </div>
+      ) : data.pubs.length === 0 ? (
+        <div className="text-center py-20">
+          <p className="text-sm text-text-muted">Aucune publication trouvée.</p>
+          {(search || source) && (
+            <button onClick={() => { setSearch(""); setSearchInput(""); setSource(""); setPage(1); }}
+              className="mt-4 text-xs font-mono text-accent hover:text-accent-hover bg-transparent border-0 cursor-pointer">
+              Réinitialiser les filtres
+            </button>
+          )}
+        </div>
       ) : (
         <>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-8">
-            {pubs.map((pub) => (
+            {data.pubs.map(pub => (
               <PublicationCard
                 key={pub.id}
                 publication={pub}
-                trustScore={scores.get(pub.id)}
-                kpt={kpts.get(pub.id)}
+                trustScore={data.scores[pub.id]}
+                kpt={data.kpts[pub.id]}
               />
             ))}
           </div>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <Pagination page={page} totalPages={totalPages} searchParams={searchParams} />
-          )}
+          <div className="flex items-center justify-between border-t border-border pt-6">
+            <p className="text-xs font-mono text-text-muted">
+              {data.total} résultat{data.total > 1 ? "s" : ""}
+              {search && ` pour "${search}"`}
+              {source && ` — source : ${source}`}
+            </p>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                disabled={page === 1}
+                className="text-xs font-mono px-3 py-1.5 border border-border rounded disabled:opacity-40 hover:border-accent hover:text-accent transition-colors bg-transparent cursor-pointer text-text-secondary"
+              >
+                ←
+              </button>
+              <div className="flex gap-1">
+                {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
+                  let p: number;
+                  if (totalPages <= 7) p = i + 1;
+                  else if (page <= 4) p = i + 1;
+                  else if (page >= totalPages - 3) p = totalPages - 6 + i;
+                  else p = page - 3 + i;
+                  return (
+                    <button
+                      key={p}
+                      onClick={() => setPage(p)}
+                      className={`text-xs font-mono w-8 h-8 rounded border transition-colors cursor-pointer ${
+                        p === page
+                          ? "bg-accent text-white border-accent"
+                          : "border-border text-text-secondary hover:border-accent hover:text-accent bg-transparent"
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  );
+                })}
+              </div>
+              <button
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                disabled={page === totalPages}
+                className="text-xs font-mono px-3 py-1.5 border border-border rounded disabled:opacity-40 hover:border-accent hover:text-accent transition-colors bg-transparent cursor-pointer text-text-secondary"
+              >
+                →
+              </button>
+            </div>
+          </div>
         </>
       )}
     </div>
   );
-}
-
-function Pagination({
-  page,
-  totalPages,
-  searchParams,
-}: {
-  page: number;
-  totalPages: number;
-  searchParams: Record<string, string | undefined>;
-}) {
-  function buildHref(p: number) {
-    const params = new URLSearchParams();
-    if (searchParams.source) params.set("source", searchParams.source);
-    if (p > 1) params.set("page", String(p));
-    const qs = params.toString();
-    return `/publications${qs ? `?${qs}` : ""}`;
-  }
-
-  return (
-    <div className="flex items-center justify-center gap-1">
-      <PaginationLink href={buildHref(page - 1)} disabled={page === 1} label="←" />
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-        <PaginationLink
-          key={p}
-          href={buildHref(p)}
-          label={String(p)}
-          active={p === page}
-        />
-      ))}
-      <PaginationLink href={buildHref(page + 1)} disabled={page === totalPages} label="→" />
-    </div>
-  );
-}
-
-function PaginationLink({
-  href,
-  label,
-  active = false,
-  disabled = false,
-}: {
-  href: string;
-  label: string;
-  active?: boolean;
-  disabled?: boolean;
-}) {
-  const cls = [
-    "inline-flex items-center justify-center w-8 h-8 text-xs font-mono rounded border transition-all",
-    active
-      ? "bg-accent/15 text-accent border-accent/40"
-      : disabled
-        ? "text-text-muted border-border opacity-40 pointer-events-none"
-        : "text-text-secondary border-border hover:border-border-strong hover:text-text-primary bg-surface-3",
-  ].join(" ");
-
-  if (disabled) return <span className={cls}>{label}</span>;
-  return <Link href={href} className={cls + " no-underline"}>{label}</Link>;
 }
