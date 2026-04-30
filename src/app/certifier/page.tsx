@@ -263,6 +263,18 @@ export default function CertifierPage() {
           </div>
         )}
       </div>
+
+     <div className="max-w-3xl mx-auto px-6 pb-14">
+       <div className="border border-border rounded-lg p-6 bg-surface-3">
+         <h3 className="text-sm font-display text-text-primary mb-2">Vous représentez une institution ?</h3>
+         <p className="text-xs text-text-secondary leading-relaxed mb-4">
+           Si vous êtes responsable d&apos;un laboratoire, d&apos;un département de recherche ou d&apos;une université, nous proposons des Site Licenses institutionnelles.
+         </p>
+         <Link href="/institutions" className="text-xs font-mono text-accent hover:text-accent-hover no-underline">
+           Voir les solutions institutionnelles →
+         </Link>
+       </div>
+     </div>
     </div>
   );
 }
