@@ -101,7 +101,7 @@ export default function ApiAccessPage() {
          <div className="bg-surface-3 border border-border rounded-lg p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
            <div>
              <p className="text-sm font-display text-text-primary mb-1">Besoin d&apos;un accès enterprise ?</p>
-             <p className="text-xs text-text-muted">Volumes > 1M VO/mois, SLA dédié, Compliance Module — contactez notre équipe.</p>
+             <p className="text-xs text-text-muted">Volumes &gt; 1M VO/mois, SLA dédié, Compliance Module — contactez notre équipe.</p>
            </div>
            <Link href="/llm/contact" className="no-underline flex-shrink-0 bg-accent hover:bg-accent-hover text-white text-xs font-mono px-5 py-2.5 rounded transition-colors">
              Talk to our enterprise team →
