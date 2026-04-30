@@ -96,17 +96,16 @@ export default function CertifierPage() {
   }
 
   return (
-
-      <div className="max-w-3xl mx-auto px-6 pb-0 pt-0">
-        <div className="border-l-4 border-accent/40 bg-accent/5 rounded-r-lg p-5 mb-0">
+    <div>
+      <div className="max-w-3xl mx-auto px-6 pt-10 pb-0">
+        <div className="border-l-4 border-accent/40 bg-accent/5 rounded-r-lg p-5">
           <p className="text-sm font-display text-text-primary mb-2">Gratuit, et ça le restera.</p>
           <p className="text-xs text-text-secondary leading-relaxed">
             KAKAPO ne facture jamais les chercheurs. Notre infrastructure est financée par les usages industriels en aval — LLM, pharma, legal. Vous gardez 100 % de vos droits, vous ne payez rien, vous ne recevez aucune sollicitation commerciale.
           </p>
         </div>
       </div>
-
-    <div className="max-w-3xl mx-auto px-6 py-14">
+      <div className="max-w-3xl mx-auto px-6 py-14">
       <div className="inline-flex items-center gap-2 border border-accent/30 bg-accent/10 rounded px-3 py-1 mb-8">
         <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
         <span className="text-2xs font-mono text-accent uppercase tracking-widest">Certifier une publication</span>
@@ -286,6 +285,8 @@ export default function CertifierPage() {
           </div>
         </div>
       )}
+    </div>
+      </div>
     </div>
   );
 }
