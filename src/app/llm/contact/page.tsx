@@ -21,11 +21,11 @@ export default function LLMContactPage() {
           { name: "contact", label: "Nom du contact", type: "text", required: true },
           { name: "fonction", label: "Fonction", type: "text", required: true },
           { name: "email", label: "Email professionnel", type: "email", required: true },
-          { name: "marches", label: "Marchés cibles de votre modèle", type: "multiselect", required: true, options: ["Grand public", "Enterprise généraliste", "Pharma & Biotech", "Legal", "Finance", "Recherche", "Je ne sais pas — orientez-moi"] },
-          { name: "modeles", label: "Modèle(s) concerné(s)", type: "textarea", required: false, placeholder: "Nom des modèles, version, taille... (optionnel si vous souhaitez être orienté)" },
-          { name: "volume", label: "Volume estimé de Verified Operations par mois", type: "select", required: true, options: ["<1M", "1-10M", "10-50M", "50-100M", ">100M", "Je ne sais pas encore"] },
+          { name: "modele", label: "Nom de votre modèle ou stack IA", type: "text", required: true, placeholder: "Ex: Mistral Large, stack RAG interne, GPT-4o..." },
+          { name: "marches", label: "Marchés que vous adressez", type: "multiselect", required: true, options: ["Grand public", "Enterprise généraliste", "Pharma & Biotech", "Legal", "Finance", "Recherche", "Autre"] },
+          { name: "volume", label: "Volume estimé de Verified Operations par mois", type: "select", required: true, options: ["<1M", "1-10M", "10-50M", "50-100M", ">100M", "À estimer ensemble"] },
           { name: "echeance", label: "Échéance projet", type: "select", required: true, options: ["<3 mois", "3-6 mois", "6-12 mois", ">12 mois"] },
-          { name: "message", label: "Message ou demande d'orientation", type: "textarea", required: false, placeholder: "Décrivez votre cas d'usage ou demandez à être orienté vers la bonne solution." },
+          { name: "message", label: "Message", type: "textarea", required: false },
         ]}
       />
     </div>
