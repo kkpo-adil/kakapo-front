@@ -1,101 +1,78 @@
 import Link from "next/link";
+import { KPTStatusBadge } from "./KPTStatusBadge";
 import type { Publication, TrustScore, KPT } from "@/types/api";
-import { Card } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
-import { ScoreBar } from "@/components/ui/ScoreBar";
-import {
-  formatAuthors,
-  formatDateShort,
-  getSourceLabel,
-  getKPTStatusLabel,
-  getKPTStatusClass,
-  getTrustBgClass,
-  formatScore,
-  cn,
-} from "@/lib/utils";
 
 interface PublicationCardProps {
   publication: Publication;
-  trustScore?: TrustScore;
-  kpt?: KPT;
+  trustScore?: TrustScore | null;
+  kpt?: KPT | null;
+}
+
+function ScoreColor(score: number) {
+  if (score >= 0.70) return "text-trust-high";
+  if (score >= 0.50) return "text-trust-mid";
+  return "text-trust-low";
 }
 
 export function PublicationCard({ publication, trustScore, kpt }: PublicationCardProps) {
-  const statusClass = kpt ? getKPTStatusClass(kpt.status) : "";
+  const isCertified = publication.kpt_status === "certified";
+  const score = trustScore?.score ?? null;
 
   return (
-    <Link href={`/publications/${publication.id}`} className="block no-underline group">
-      <Card hover padding="md" as="article" className="h-full flex flex-col gap-4">
-
-        {/* Top row: source + date + KPT status */}
-        <div className="flex items-center justify-between gap-2 flex-wrap">
-          <div className="flex items-center gap-2">
-            <Badge variant="accent" size="sm">
-              {getSourceLabel(publication.source)}
-            </Badge>
-            {publication.doi && (
-              <span className="text-2xs font-mono text-text-muted hidden sm:block truncate max-w-[180px]">
-                {publication.doi}
-              </span>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            {kpt && (
-              <span
-                className={cn(
-                  "inline-flex items-center gap-1 border rounded px-1.5 py-0.5 text-2xs font-mono uppercase tracking-wide",
-                  statusClass
-                )}
-              >
-                <span className="w-1 h-1 rounded-full bg-current" />
-                {getKPTStatusLabel(kpt.status)}
-              </span>
-            )}
-            <span className="text-2xs font-mono text-text-muted">
-              {formatDateShort(publication.submitted_at ?? publication.created_at)}
+    <Link href={`/publications/${publication.id}`}
+      className={`block no-underline rounded-lg border transition-all hover:shadow-sm group ${
+        isCertified
+          ? "bg-surface-2 border-accent/30 hover:border-accent/60"
+          : "bg-surface-2 border-border hover:border-border-strong"
+      }`}
+    >
+      <div className="p-4">
+        <div className="flex items-start justify-between gap-2 mb-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-2xs font-mono text-text-muted bg-surface-3 border border-border rounded px-2 py-0.5 uppercase tracking-widest">
+              {publication.source || "—"}
             </span>
+            <KPTStatusBadge status={publication.kpt_status ?? "indexed"} size="sm" />
           </div>
+          {score !== null && (
+            <span className={`text-xs font-mono font-semibold flex-shrink-0 ${ScoreColor(score)}`}>
+              {Math.round(score * 100)}%
+            </span>
+          )}
         </div>
 
-        {/* Title */}
-        <h2 className="text-sm font-display text-text-primary leading-snug group-hover:text-accent transition-colors line-clamp-2">
+        <h3 className="text-sm font-display text-text-primary leading-snug mb-2 line-clamp-2 group-hover:text-accent transition-colors">
           {publication.title}
-        </h2>
+        </h3>
 
-        {/* Abstract */}
         {publication.abstract && (
-          <p className="text-xs text-text-muted leading-relaxed line-clamp-2 flex-1">
+          <p className="text-xs text-text-muted leading-relaxed line-clamp-2 mb-3">
             {publication.abstract}
           </p>
         )}
 
-        {/* Bottom row: authors + score */}
-        <div className="flex items-end justify-between gap-4 pt-1 border-t border-border-subtle">
-          <div className="min-w-0">
-            <p className="field-label">Auteurs</p>
-            <p className="text-xs text-text-secondary truncate">
-              {formatAuthors(publication.authors_raw)}
-            </p>
+        <div className="flex items-end justify-between pt-3 border-t border-border">
+          <div>
+            {publication.authors_raw && (
+              <p className="text-2xs text-text-muted truncate max-w-[180px]">
+                {typeof publication.authors_raw === "string"
+                  ? publication.authors_raw.slice(0, 60)
+                  : ""}
+              </p>
+            )}
+            {publication.doi && (
+              <p className="text-2xs font-mono text-text-muted/60 mt-0.5 truncate max-w-[180px]">
+                {publication.doi}
+              </p>
+            )}
           </div>
-
-          {trustScore && (
-            <div className="flex-shrink-0 w-28">
-              <p className="field-label text-right">Fiabilité</p>
-              <div className="flex items-center gap-2 justify-end">
-                <span
-                  className={cn(
-                    "text-xs font-mono font-medium tabular-nums px-1.5 py-0.5 rounded border",
-                    getTrustBgClass(trustScore.score)
-                  )}
-                >
-                  {formatScore(trustScore.score)}
-                </span>
-              </div>
-              <ScoreBar score={trustScore.score} showValue={false} height="xs" className="mt-1.5" />
-            </div>
+          {publication.source_origin === "hal" && (
+            <span className="text-2xs font-mono text-text-muted flex-shrink-0">
+              HAL Open Science
+            </span>
           )}
         </div>
-      </Card>
+      </div>
     </Link>
   );
 }
