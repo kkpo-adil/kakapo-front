@@ -48,7 +48,7 @@ export default function PublicationsPage() {
   const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/publications/stats`)
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/publications/summary/stats`)
       .then(r => r.json())
       .then(d => setStats(d))
       .catch(() => null);
