@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
 import { PublicationCard } from "@/components/publication/PublicationCard";
 import type { Publication, TrustScore, KPT } from "@/types/api";
 
