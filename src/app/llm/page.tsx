@@ -38,7 +38,7 @@ export default function LLMPage() {
       <section className="border-t border-b border-border bg-surface-3">
         <div className="max-w-5xl mx-auto px-6 py-16">
           <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">Niveaux d&apos;engagement</p>
-          <h2 className="text-2xl font-display text-text-primary mb-8">Trois formules, aucun prix affiché.</h2>
+          <h2 className="text-2xl font-display text-text-primary mb-8">Trois niveaux d'engagement.</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <EnterpriseTierCard tierName="Tier 3" tierTagline="Vertical & Specialized" description="Pour les LLM verticaux et spécialisés (santé, droit, recherche). Cycle de signature court, focus sectoriel." components={["Annual Access License", "Verified Operations quota", "Compliance Module inclus"]} engagement="12 mois" ctaLabel="Talk to our enterprise team" ctaHref="/llm/contact" accent="llm" />
             <EnterpriseTierCard tierName="Tier 2" tierTagline="Regional & Sovereign" description="Pour les LLM régionaux ou souverains adressant un marché national ou européen avec exigences spécifiques." components={["Annual Access License", "Verified Operations quota", "Compliance Module en option"]} engagement="12 mois" ctaLabel="Talk to our enterprise team" ctaHref="/llm/contact" accent="llm" />

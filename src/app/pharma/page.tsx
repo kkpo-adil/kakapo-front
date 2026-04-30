@@ -33,23 +33,24 @@ export default function PharmaPage() {
         </div>
       </section>
 
-      <section className="bg-slate-900 text-white">
+      <section className="border-t border-b border-border bg-surface-3">
         <div className="max-w-5xl mx-auto px-6 py-16">
-          <h2 className="text-2xl font-display mb-10 text-center" style={{ color: "#F5D98B" }}>Combien KAKAPO vous fait économiser</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+          <p className="text-2xs font-mono uppercase tracking-widest mb-2" style={{ color: "#0F766E" }}>Le ROI</p>
+          <h2 className="text-2xl font-display text-text-primary mb-10">Combien KAKAPO vous fait économiser.</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border rounded-lg overflow-hidden mb-8">
             {[
               { value: "100 €/h", legend: "Coût horaire chargé d'un pharmacien réglementaire ou medical writer senior." },
               { value: "20 min", legend: "Temps moyen de vérification manuelle d'une source scientifique." },
               { value: "70–90 %", legend: "Réduction de la charge de validation humaine sur les sources tracées par KPT." },
             ].map(({ value, legend }) => (
-              <div key={value} className="text-center">
-                <p className="text-4xl font-display mb-3" style={{ color: "#F5D98B" }}>{value}</p>
-                <p className="text-sm text-slate-300 leading-relaxed">{legend}</p>
+              <div key={value} className="bg-surface-2 p-6 text-center">
+                <p className="text-3xl font-display text-accent mb-3">{value}</p>
+                <p className="text-xs text-text-muted leading-relaxed">{legend}</p>
               </div>
             ))}
           </div>
-          <div className="border border-slate-700 rounded-lg p-6 text-center max-w-2xl mx-auto">
-            <p className="text-sm text-slate-300 leading-relaxed">Pour une équipe de 10 medical writers traitant 200 sources par semaine, KAKAPO représente une économie estimée de <strong className="text-white">200 000 à 350 000 € par an</strong> — pour un coût KAKAPO largement inférieur.</p>
+          <div className="bg-surface-2 border border-border rounded-lg p-6 text-center max-w-2xl mx-auto">
+            <p className="text-sm text-text-secondary leading-relaxed">Pour une équipe de 10 medical writers traitant 200 sources par semaine, KAKAPO représente une économie estimée de <strong className="text-text-primary">200 000 à 350 000 € par an</strong> — pour un coût KAKAPO largement inférieur.</p>
           </div>
         </div>
       </section>
@@ -67,7 +68,7 @@ export default function PharmaPage() {
           <p className="text-xs text-text-muted italic">Module disponible sur les abonnements Big Pharma, Mid Pharma et Biotech & Devices.</p>
         </div>
         <p className="text-2xs font-mono uppercase tracking-widest mb-2" style={{ color: "#0F766E" }}>Formules</p>
-        <h2 className="text-2xl font-display text-text-primary mb-8">3 formules adaptées à votre structure.</h2>
+        <h2 className="text-2xl font-display text-text-primary mb-8">Trois formules adaptées à votre structure.</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <EnterpriseTierCard tierName="Big Pharma" tierTagline="Top 25 mondial" description="R&D > 5 Md USD. Corpus massif, exigences réglementaires maximales." components={["Enterprise License", "Verified Operations quota", "Compliance Module inclus", "Audit trail FDA/EMA"]} engagement="24 mois" ctaLabel="Talk to our regulatory team" ctaHref="/pharma/contact" accent="pharma" />
           <EnterpriseTierCard tierName="Mid Pharma" tierTagline="Pharma régionaux" description="R&D 500 M – 5 Md USD. Spécialisation thérapeutique, cycle réglementaire actif." components={["Enterprise License", "Verified Operations quota", "Compliance Module en option", "Audit trail"]} engagement="24 mois" ctaLabel="Talk to our regulatory team" ctaHref="/pharma/contact" accent="pharma" />
