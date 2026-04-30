@@ -105,7 +105,8 @@ export default function CertifierPage() {
           </p>
         </div>
       </div>
-      <div className="max-w-3xl mx-auto px-6 py-14">
+    <div className="max-w-3xl mx-auto px-6 py-14">
+
       <div className="inline-flex items-center gap-2 border border-accent/30 bg-accent/10 rounded px-3 py-1 mb-8">
         <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
         <span className="text-2xs font-mono text-accent uppercase tracking-widest">Certifier une publication</span>
