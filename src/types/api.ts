@@ -98,6 +98,7 @@ export interface PublicationQuery {
   skip?: number;
   limit?: number;
   source?: PublicationSource;
+  kpt_status?: 'certified' | 'indexed';
 }
 
 // ─── API error ────────────────────────────────────────────────────────────────

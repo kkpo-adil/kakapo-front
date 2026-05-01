@@ -18,6 +18,7 @@ export async function getPublications(
       skip: query.skip ?? 0,
       limit: query.limit ?? 20,
       source: query.source,
+      kpt_status: query.kpt_status,
     },
     next: { revalidate: 60 },
   });
