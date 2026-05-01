@@ -12,7 +12,7 @@ export interface Author {
 }
 
 export interface Publication {
-  kpt_status: 'certified' | 'indexed';
+  kpt_status: PublicationKPTStatus;
   source_origin: 'hal' | 'editor_partner' | 'direct_deposit';
   hal_id: string | null;
   opted_out_at: string | null;
@@ -107,7 +107,7 @@ export interface ApiError {
   status: number;
 }
 
-export type KPTStatus = 'certified' | 'indexed';
+export type PublicationKPTStatus = 'certified' | 'indexed';
 export type SourceOrigin = 'hal' | 'editor_partner' | 'direct_deposit';
 
 export interface PublicationStats {
