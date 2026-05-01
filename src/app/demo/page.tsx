@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { DemoQueryInput, PRESET_QUESTIONS } from "@/components/demo/DemoQueryInput";
+import { DemoQueryInput } from "@/components/demo/DemoQueryInput";
 import { DemoModeToggle } from "@/components/demo/DemoModeToggle";
 import { DemoAnswerDisplay } from "@/components/demo/DemoAnswerDisplay";
 import { DemoComparisonView } from "@/components/demo/DemoComparisonView";
