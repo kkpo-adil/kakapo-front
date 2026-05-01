@@ -16,7 +16,7 @@ async function fetchGraphData(): Promise<{
   fromMock: boolean;
 }> {
   try {
-    const list   = await getPublications({ limit: 50, skip: 0, source: undefined });
+    const list   = await getPublications({ limit: 50, skip: 0, kpt_status: 'certified' });
     const pubs   = list.items;
     const scores = (
       await Promise.all(pubs.map((p) => getTrustScore(p.id).catch(() => null)))
