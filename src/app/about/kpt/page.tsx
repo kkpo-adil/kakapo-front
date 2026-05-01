@@ -4,10 +4,10 @@ export default function AboutKPTPage() {
   return (
     <div className="max-w-3xl mx-auto px-6 py-16">
       <Link href="/" className="text-xs font-mono text-text-muted hover:text-accent no-underline">← Accueil</Link>
-      <div className="mt-8 mb-2 text-2xs font-mono text-accent uppercase tracking-widest">Proof of Knowledge Token</div>
+      <div className="mt-8 mb-2 text-2xs font-mono text-accent uppercase tracking-widest">Knowledge Provenance Token</div>
       <h1 className="text-3xl font-display text-text-primary mb-6 leading-tight">Qu'est-ce qu'un KPT ?</h1>
       <p className="text-base text-text-secondary leading-relaxed mb-10">
-        Un KPT (Proof of Knowledge Token) est un certificat cryptographique non transférable qui prouve qu'une publication scientifique existait à un instant précis, avec un contenu précis, sous l'identité d'un auteur précis.
+        Un KPT (Knowledge Provenance Token) est un certificat cryptographique non transférable qui prouve qu'une publication scientifique existait à un instant précis, avec un contenu précis, sous l'identité d'un auteur précis.
       </p>
 
       <div className="space-y-8">

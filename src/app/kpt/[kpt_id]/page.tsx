@@ -42,7 +42,7 @@ async function fetchKPTData(kptId: string): Promise<{
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   return {
     title: `KPT ${(await params).kpt_id}`,
-    description: `Détail du Proof of Knowledge Token ${(await params).kpt_id}`,
+    description: `Détail du Knowledge Provenance Token ${(await params).kpt_id}`,
   };
 }
 
@@ -80,7 +80,7 @@ export default async function KPTDetailPage({ params }: PageProps) {
       {/* Header */}
       <div className="flex items-start justify-between gap-4 mb-8 flex-wrap">
         <div>
-          <p className="field-label mb-1">Proof of Knowledge Token</p>
+          <p className="field-label mb-1">Knowledge Provenance Token</p>
           <h1 className="text-xl font-mono text-text-primary break-all">{kpt.kpt_id}</h1>
         </div>
         <Badge variant={STATUS_VARIANT[kpt.status] ?? "neutral"} size="md" dot>

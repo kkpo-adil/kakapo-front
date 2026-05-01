@@ -230,7 +230,7 @@ export default function CertifierPage() {
               <p className="text-sm text-text-secondary">Votre publication est maintenant certifiée sur KAKAPO.</p>
             </div>
             <div className="bg-surface-3 border border-accent/20 rounded p-6 space-y-4">
-              <p className="text-2xs font-mono text-accent uppercase tracking-widest">Proof of Knowledge Token</p>
+              <p className="text-2xs font-mono text-accent uppercase tracking-widest">Knowledge Provenance Token</p>
               <div className="space-y-3">
                 <div>
                   <p className="text-2xs font-mono text-text-muted mb-1">KPT ID</p>

@@ -115,7 +115,7 @@ export default async function PublicationDetailPage({ params }: PageProps) {
 
           {/* KPT */}
           <section>
-            <SectionHeading>Proof of Knowledge Token</SectionHeading>
+            <SectionHeading>Knowledge Provenance Token</SectionHeading>
             <KPTPanel kpts={kpts} />
           </section>
 

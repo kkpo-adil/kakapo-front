@@ -4,7 +4,7 @@ import { KPTVerifyForm } from "@/components/kpt/KPTVerifyForm";
 
 export const metadata: Metadata = {
   title: "Vérifier un KPT",
-  description: "Vérifiez l'intégrité et la validité d'un Proof of Knowledge Token KAKAPO.",
+  description: "Vérifiez l'intégrité et la validité d'un Knowledge Provenance Token KAKAPO.",
 };
 
 interface PageProps {
@@ -30,7 +30,7 @@ export default function VerifyPage({ searchParams }: PageProps) {
               Vérifier un KPT
             </h1>
             <p className="text-sm text-text-muted leading-relaxed">
-              Entrez l'identifiant d'un Proof of Knowledge Token pour vérifier son
+              Entrez l'identifiant d'un Knowledge Provenance Token pour vérifier son
               intégrité, son statut et l'authenticité du contenu certifié.
             </p>
           </div>

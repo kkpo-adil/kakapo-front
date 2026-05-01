@@ -128,7 +128,7 @@ export default async function HomePage() {
       <section className="max-w-7xl mx-auto px-6 py-14">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-px bg-border rounded-lg overflow-hidden">
           {[
-            { href: "/about/kpt", title: "KPT", sub: "Proof of Knowledge Token", desc: "Empreinte cryptographique qui certifie l'antériorité, l'intégrité et le statut d'une publication. Non transférable, horodaté, vérifiable publiquement." },
+            { href: "/about/kpt", title: "KPT", sub: "Knowledge Provenance Token", desc: "Empreinte cryptographique qui certifie l'antériorité, l'intégrité et le statut d'une publication. Non transférable, horodaté, vérifiable publiquement." },
             { href: "/about/ikpt", title: "i-KPT", sub: "Indexed Knowledge Provenance Token", desc: "Token d'indexation généré depuis les métadonnées publiques (HAL, CrossRef). Traçable et scoré, convertible en KPT certifié si l'éditeur signe." },
             { href: "/about/trust-score", title: "Trust Score", sub: "Score de fiabilité", desc: "Indice de confiance calculé sur des signaux vérifiables : source, données, fraîcheur, citations et cohérence structurelle." },
             { href: "/about/api", title: "API", sub: "Accès machine", desc: "Interface conçue pour que les IA et systèmes R&D vérifient une source avant de l'exploiter. Vérification par Verified Operation, latence < 200ms." },
