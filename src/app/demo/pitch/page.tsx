@@ -7,7 +7,6 @@ import { DemoReplayMode } from "@/components/demo/DemoReplayMode";
 import { postDemoQuery } from "@/lib/api/demo";
 import type { DemoResult } from "@/types/demo";
 
-export const metadata = { robots: "noindex" };
 
 export default function DemoPitchPage() {
   const [question, setQuestion] = useState("");
