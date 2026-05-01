@@ -102,3 +102,14 @@ export interface ApiError {
   detail: string;
   status: number;
 }
+
+export type KPTStatus = 'certified' | 'indexed';
+export type SourceOrigin = 'hal' | 'editor_partner' | 'direct_deposit';
+
+export interface PublicationStats {
+  total: number;
+  certified: number;
+  indexed: number;
+  avg_score_certified: number | null;
+  by_source: Record<string, number>;
+}
