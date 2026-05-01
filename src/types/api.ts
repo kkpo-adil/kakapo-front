@@ -12,6 +12,10 @@ export interface Author {
 }
 
 export interface Publication {
+  kpt_status: 'certified' | 'indexed';
+  source_origin: 'hal' | 'editor_partner' | 'direct_deposit';
+  hal_id: string | null;
+  opted_out_at: string | null;
   id: string;
   title: string;
   abstract: string | null;
