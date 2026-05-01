@@ -14,7 +14,7 @@ function ScoreColor(score: number) {
   return "text-trust-low";
 }
 
-export function PublicationCard({ publication, trustScore, kpt }: PublicationCardProps) {
+export function PublicationCard({ publication, trustScore, kpt: _kpt }: PublicationCardProps) {
   const isCertified = publication.kpt_status === "certified";
   const score = trustScore?.score ?? null;
 
