@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /demo/pitch
+
+Sitemap: https://kakapo-front.vercel.app/sitemap.xml
