@@ -1,183 +1,147 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
-interface Publication {
+interface PublicationEarning {
   id: string;
   title: string;
-  doi: string | null;
-  source: string | null;
-  submitted_at: string | null;
+  kpt_status: "certified" | "indexed";
   kpt_id: string | null;
-  kpt_status: string | null;
-  verifications: number;
-  ai_queries: number;
+  trust_score: number | null;
+  vo_generated: number;
+  earnings_usd: number;
+  submitted_at: string | null;
 }
 
-interface Dashboard {
-  profile: { display_name: string; orcid_id: string; is_verified: boolean };
-  quota: { monthly_quota: number; used: number; remaining: number; period_end: string | null };
-  stats: { total_publications: number; total_kpts: number; total_verifications: number; total_ai_queries: number };
-  publications: Publication[];
-}
-
-function decodeJWT(token: string) {
-  try { return JSON.parse(atob(token.split(".")[1])); } catch { return null; }
+interface EarningsData {
+  total_publications: number;
+  certified_kpts: number;
+  indexed_kpts: number;
+  total_vo_generated: number;
+  total_earnings_usd: number;
+  revenue_share_pct: number;
+  publications: PublicationEarning[];
 }
 
 export default function DashboardPage() {
-  const router = useRouter();
-  const [data, setData] = useState<Dashboard | null>(null);
+  const [data, setData] = useState<EarningsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("kakapo_token");
-    if (!token) { router.push("/"); return; }
-    const payload = decodeJWT(token);
-    if (!payload) { router.push("/"); return; }
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/dashboard`, {
+    if (!token) { setLoading(false); return; }
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/publications/my/earnings`, {
       headers: { Authorization: `Bearer ${token}` },
     })
-      .then((r) => { if (!r.ok) throw new Error("Erreur dashboard"); return r.json(); })
-      .then((d) => { setData(d); setLoading(false); })
-      .catch((e) => { setError(e.message); setLoading(false); });
-  }, [router]);
+      .then(r => r.ok ? r.json() : Promise.reject("Erreur"))
+      .then(d => setData(d))
+      .catch(() => setError("Impossible de charger vos données."))
+      .finally(() => setLoading(false));
+  }, []);
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin" />
+    <div className="max-w-4xl mx-auto px-6 py-20 text-center">
+      <p className="text-xs font-mono text-text-muted animate-pulse">Chargement...</p>
     </div>
   );
 
-  if (error || !data) return (
-    <div className="min-h-screen flex items-center justify-center">
-      <p className="text-sm font-mono text-red-400">{error || "Erreur"}</p>
+  if (!data) return (
+    <div className="max-w-4xl mx-auto px-6 py-20 text-center">
+      <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-4">Espace chercheur</p>
+      <h1 className="text-2xl font-display text-text-primary mb-4">Connectez-vous pour accéder à votre dashboard</h1>
+      <p className="text-sm text-text-secondary mb-8">Suivez vos publications certifiées et les revenus générés par les LLMs sur votre corpus.</p>
+      <a href={`${process.env.NEXT_PUBLIC_API_URL}/auth/orcid/login`}
+        className="no-underline inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-sm px-6 py-3 rounded transition-colors">
+        Se connecter avec ORCID →
+      </a>
+      {error && <p className="text-xs text-trust-low mt-4">{error}</p>}
     </div>
   );
-
-  const quotaPct = data.quota.monthly_quota > 0
-    ? Math.round(data.quota.used / data.quota.monthly_quota * 100)
-    : 0;
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-14">
-      <div className="flex items-center justify-between mb-10">
-        <div>
-          <div className="inline-flex items-center gap-2 border border-accent/30 bg-accent/10 rounded px-3 py-1 mb-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-            <span className="text-2xs font-mono text-accent uppercase tracking-widest">Dashboard Scientifique</span>
-          </div>
-          <h1 className="text-2xl font-display text-text-primary">{data.profile.display_name}</h1>
-          <a href={`https://orcid.org/${data.profile.orcid_id}`} target="_blank" rel="noopener noreferrer"
-            className="text-xs font-mono text-accent no-underline">
-            orcid.org/{data.profile.orcid_id}
-          </a>
-        </div>
-        <Link href="/certifier"
-          className="no-underline bg-accent hover:bg-accent-hover text-white text-xs font-mono px-5 py-2.5 rounded transition-colors">
-          + Certifier une publication
-        </Link>
+    <div className="max-w-5xl mx-auto px-6 py-10">
+      <div className="mb-8">
+        <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">Espace chercheur</p>
+        <h1 className="text-2xl font-display text-text-primary">Mon tableau de bord</h1>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border rounded-lg overflow-hidden mb-8">
         {[
-          { label: "Publications", value: data.stats.total_publications },
-          { label: "KPTs actifs", value: data.stats.total_kpts },
-          { label: "Vérifications", value: data.stats.total_verifications },
-          { label: "Requêtes IA", value: data.stats.total_ai_queries },
-        ].map(({ label, value }) => (
-          <div key={label} className="bg-surface-1 p-5">
-            <p className="text-2xl font-mono font-semibold text-text-primary tabular-nums">{value}</p>
+          { label: "Publications", value: data.total_publications.toString(), color: "text-text-primary" },
+          { label: "KPT certifiés", value: data.certified_kpts.toString(), color: "text-amber-600" },
+          { label: "i-KPT indexés", value: data.indexed_kpts.toString(), color: "text-accent" },
+          { label: "Revenus (USD)", value: `$${data.total_earnings_usd.toFixed(2)}`, color: "text-trust-high" },
+        ].map(({ label, value, color }) => (
+          <div key={label} className="bg-surface-2 px-5 py-4">
+            <p className={`text-2xl font-mono font-bold tabular-nums ${color}`}>{value}</p>
             <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mt-1">{label}</p>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_280px] gap-6 mb-10">
-        <div className="border border-border rounded p-5">
-          <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-4">Quota certifications ce mois</p>
-          <div className="flex justify-between text-xs font-mono text-text-secondary mb-2">
-            <span>{data.quota.used} utilisées</span>
-            <span>{data.quota.remaining} restantes / {data.quota.monthly_quota}</span>
+      <div className="border border-border rounded-lg p-5 mb-8 bg-surface-3">
+        <div className="flex items-start gap-4">
+          <div className="flex-1">
+            <p className="text-xs font-mono text-accent uppercase tracking-widest mb-1">Modèle de revenus</p>
+            <p className="text-sm text-text-secondary leading-relaxed">
+              Vous recevez <strong className="text-text-primary">{data.revenue_share_pct}%</strong> des Verified Operations générées par les LLMs sur vos publications certifiées.
+              Chaque fois qu'un système d'IA vérifie une de vos sources, vous êtes rémunéré.
+            </p>
           </div>
-          <div className="h-2 bg-surface-3 rounded-full overflow-hidden">
-            <div className="h-full bg-accent rounded-full transition-all" style={{ width: `${quotaPct}%` }} />
+          <div className="text-right flex-shrink-0">
+            <p className="text-2xs font-mono text-text-muted">VO générées</p>
+            <p className="text-xl font-mono font-bold text-text-primary">{data.total_vo_generated.toLocaleString("fr-FR")}</p>
           </div>
-          <p className="text-2xs text-text-muted mt-2">Gratuit pour les chercheurs identifiés — renouvellement mensuel</p>
-        </div>
-        <div className="border border-border rounded p-5 space-y-3">
-          <p className="text-xs font-mono text-text-muted uppercase tracking-widest">Actions</p>
-          <Link href="/profile" className="block text-xs font-mono border border-border rounded px-3 py-2 text-text-secondary hover:text-accent hover:border-accent/40 transition-colors no-underline">
-            Modifier le profil →
-          </Link>
-          <Link href="/publications" className="block text-xs font-mono border border-border rounded px-3 py-2 text-text-secondary hover:text-accent hover:border-accent/40 transition-colors no-underline">
-            Explorer les publications →
-          </Link>
-          <Link href="/verify" className="block text-xs font-mono border border-border rounded px-3 py-2 text-text-secondary hover:text-accent hover:border-accent/40 transition-colors no-underline">
-            Vérifier un KPT →
-          </Link>
         </div>
       </div>
 
       <div>
-        <h2 className="text-sm font-display text-text-primary mb-4">Mes publications certifiées</h2>
+        <h2 className="text-lg font-display text-text-primary mb-4">Mes publications</h2>
         {data.publications.length === 0 ? (
-          <div className="border border-border rounded p-10 text-center">
+          <div className="border border-dashed border-border rounded-lg p-12 text-center">
             <p className="text-sm text-text-muted mb-4">Aucune publication certifiée.</p>
-            <Link href="/certifier" className="no-underline text-xs font-mono text-accent hover:underline">
+            <Link href="/certifier" className="no-underline text-xs font-mono text-accent hover:text-accent-hover">
               Certifier ma première publication →
             </Link>
           </div>
         ) : (
           <div className="space-y-3">
-            {data.publications.map((pub) => (
-              <div key={pub.id} className="border border-border rounded p-5 hover:border-border-strong transition-colors">
+            {data.publications.map(pub => (
+              <div key={pub.id} className={`border rounded-lg p-4 ${pub.kpt_status === "certified" ? "border-amber-200 bg-amber-50/30" : "border-border bg-surface-2"}`}>
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2 flex-wrap">
-                      {pub.source && (
-                        <span className="text-2xs font-mono text-accent border border-accent/20 rounded px-2 py-0.5 uppercase">
-                          {pub.source}
-                        </span>
-                      )}
-                      {pub.kpt_status && (
-                        <span className={`text-2xs font-mono border rounded px-2 py-0.5 uppercase ${
-                          pub.kpt_status === "active" ? "text-trust-high border-trust-high/30" : "text-text-muted border-border"
-                        }`}>
-                          ● {pub.kpt_status}
-                        </span>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className={`text-2xs font-mono font-semibold px-2 py-0.5 rounded uppercase ${pub.kpt_status === "certified" ? "bg-amber-500 text-white" : "bg-surface-3 border border-border text-text-muted"}`}>
+                        {pub.kpt_status === "certified" ? "★ KPT" : "i-KPT"}
+                      </span>
+                      {pub.trust_score && (
+                        <span className="text-2xs font-mono text-accent">{pub.trust_score}/100</span>
                       )}
                     </div>
-                    <h3 className="text-sm font-display text-text-primary mb-1 line-clamp-2">{pub.title}</h3>
-                    {pub.doi && (
-                      <p className="text-2xs font-mono text-text-muted">{pub.doi}</p>
+                    <p className="text-sm font-display text-text-primary leading-snug truncate">{pub.title}</p>
+                    {pub.kpt_id && (
+                      <p className="text-2xs font-mono text-text-muted mt-1">{pub.kpt_id}</p>
                     )}
                   </div>
-                  <div className="flex-shrink-0 text-right space-y-1">
-                    <div className="text-xs font-mono text-text-muted">
-                      <span className="text-text-primary font-semibold">{pub.verifications}</span> vérif.
-                    </div>
-                    <div className="text-xs font-mono text-text-muted">
-                      <span className="text-text-primary font-semibold">{pub.ai_queries}</span> requêtes IA
-                    </div>
+                  <div className="text-right flex-shrink-0">
+                    <p className="text-xs font-mono text-text-muted">Revenus</p>
+                    <p className="text-lg font-mono font-bold text-trust-high">${pub.earnings_usd.toFixed(2)}</p>
+                    <p className="text-2xs font-mono text-text-muted">{pub.vo_generated} VO</p>
                   </div>
                 </div>
-                {pub.kpt_id && (
-                  <div className="mt-3 pt-3 border-t border-border flex items-center justify-between gap-4">
-                    <code className="text-2xs font-mono text-text-muted">{pub.kpt_id}</code>
-                    <Link href={`/verify?kpt_id=${pub.kpt_id}`}
-                      className="no-underline text-2xs font-mono text-accent hover:text-accent-hover">
-                      Vérifier →
-                    </Link>
-                  </div>
-                )}
               </div>
             ))}
           </div>
         )}
+      </div>
+
+      <div className="mt-8 border-t border-border pt-6">
+        <p className="text-xs text-text-muted leading-relaxed">
+          Les revenus sont calculés sur la base de {data.revenue_share_pct}% des Verified Operations.
+          Les reversements sont effectués mensuellement. Infrastructure KAKAPO V3.0.
+        </p>
       </div>
     </div>
   );
