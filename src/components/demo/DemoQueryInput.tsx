@@ -6,6 +6,7 @@ const PRESET_QUESTIONS = [
   "Quels sont les biomarqueurs pronostiques validés dans le cancer du sein triple négatif ?",
   "Quelle est l'efficacité des inhibiteurs de SGLT2 dans l'insuffisance cardiaque ?",
   "Comment les réseaux de neurones résiduels ont-ils amélioré la reconnaissance d'images ?",
+  "Quels sont les effets des antidépresseurs ISRS sur la neuroplasticité cérébrale ?",
 ];
 
 interface DemoQueryInputProps {
