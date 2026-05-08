@@ -53,13 +53,13 @@ export default function AdminDashboard() {
     <div className="max-w-6xl mx-auto px-6 py-10">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <p className="text-2xs font-mono text-amber-600 uppercase tracking-widest mb-1">KAKAPO Admin</p>
+          <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-1">KAKAPO Admin</p>
           <h1 className="text-2xl font-display text-text-primary">Tableau de bord infrastructure</h1>
           <p className="text-xs font-mono text-text-muted mt-1">Refresh toutes les 5s — {lastUpdate.toLocaleTimeString("fr-FR")}</p>
         </div>
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-trust-high animate-pulse" />
-          <span className="text-2xs font-mono text-trust-high uppercase">Live</span>
+          <span className="text-2xs font-mono text-text-secondary uppercase">Live</span>
         </div>
       </div>
 
@@ -85,13 +85,13 @@ export default function AdminDashboard() {
               <div className="flex-1 h-4 bg-surface-3 rounded-full overflow-hidden">
                 <div className="h-full bg-accent rounded-full" style={{ width: "40%" }} />
               </div>
-              <span className="text-xs font-mono text-amber-600 w-24 text-right font-semibold">40% KAKAPO</span>
+              <span className="text-xs font-mono text-accent w-24 text-right font-semibold">40% KAKAPO</span>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex-1 h-4 bg-surface-3 rounded-full overflow-hidden">
                 <div className="h-full bg-accent/50 rounded-full" style={{ width: "60%" }} />
               </div>
-              <span className="text-xs font-mono text-trust-high w-24 text-right font-semibold">60% Chercheurs</span>
+              <span className="text-xs font-mono text-text-secondary w-24 text-right font-semibold">60% Chercheurs</span>
             </div>
           </div>
           <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-3 mt-6">Par segment</p>
@@ -101,7 +101,7 @@ export default function AdminDashboard() {
             <div key={s.segment} className="flex items-center justify-between mb-2">
               <span className="text-2xs font-mono bg-surface-3 border border-border rounded px-2 py-0.5 uppercase">{s.segment}</span>
               <div className="text-right">
-                <span className="text-xs font-mono text-amber-600 font-bold">${s.kakapo_usd.toFixed(4)}</span>
+                <span className="text-xs font-mono text-accent font-bold">${s.kakapo_usd.toFixed(4)}</span>
                 <span className="text-2xs text-text-muted ml-2">{s.vo_count} VO</span>
               </div>
             </div>
@@ -121,7 +121,7 @@ export default function AdminDashboard() {
                     <p className="text-text-muted truncate">{t.question}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-mono text-amber-600 font-semibold">+${t.kakapo_usd.toFixed(4)}</p>
+                    <p className="font-mono text-accent font-semibold">+${t.kakapo_usd.toFixed(4)}</p>
                     <p className="text-text-muted">{new Date(t.created_at).toLocaleTimeString("fr-FR")}</p>
                   </div>
                 </div>
@@ -131,8 +131,8 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="border border-amber-300/30 bg-amber-50/20 rounded-lg p-5">
-        <p className="text-2xs font-mono text-amber-600 uppercase tracking-widest mb-3">Projection annuelle</p>
+      <div className="border border-border bg-surface-3 rounded-lg p-5">
+        <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-3">Projection annuelle</p>
         <div className="grid grid-cols-3 gap-4">
           {[
             { label: "10K VO/mois", kakapo: 10000*12*0.16, party: 10000*12*0.24 },
@@ -141,8 +141,8 @@ export default function AdminDashboard() {
           ].map(p => (
             <div key={p.label} className="bg-surface-2 rounded p-3 border border-border">
               <p className="text-2xs font-mono text-text-muted mb-2">{p.label}</p>
-              <p className="text-sm font-mono font-bold text-amber-600">${(p.kakapo/1000).toFixed(0)}K KAKAPO</p>
-              <p className="text-xs font-mono text-trust-high">${(p.party/1000).toFixed(0)}K chercheurs</p>
+              <p className="text-sm font-mono font-bold text-accent">${(p.kakapo/1000).toFixed(0)}K KAKAPO</p>
+              <p className="text-xs font-mono text-text-secondary">${(p.party/1000).toFixed(0)}K chercheurs</p>
             </div>
           ))}
         </div>
