@@ -66,8 +66,8 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border rounded-lg overflow-hidden mb-8">
         {[
           { label: "Total VO", value: stats?.total_vo ?? 0, color: "text-accent", prefix: "" },
-          { label: "Revenus KAKAPO (40%)", value: `$${(stats?.kakapo_revenue_usd ?? 0).toFixed(4)}`, color: "text-amber-600", prefix: "" },
-          { label: "Reversé chercheurs (60%)", value: `$${(stats?.party_revenue_usd ?? 0).toFixed(4)}`, color: "text-trust-high", prefix: "" },
+          { label: "Revenus KAKAPO (40%)", value: `$${(stats?.kakapo_revenue_usd ?? 0).toFixed(4)}`, color: "text-accent", prefix: "" },
+          { label: "Reversé chercheurs (60%)", value: `$${(stats?.party_revenue_usd ?? 0).toFixed(4)}`, color: "text-text-secondary", prefix: "" },
           { label: "Volume total", value: `$${(stats?.total_revenue_usd ?? 0).toFixed(4)}`, color: "text-text-primary", prefix: "" },
         ].map(({ label, value, color }) => (
           <div key={label} className="bg-surface-2 px-5 py-4">
@@ -83,13 +83,13 @@ export default function AdminDashboard() {
           <div className="space-y-3 mb-4">
             <div className="flex items-center gap-3">
               <div className="flex-1 h-4 bg-surface-3 rounded-full overflow-hidden">
-                <div className="h-full bg-amber-500 rounded-full" style={{ width: "40%" }} />
+                <div className="h-full bg-accent rounded-full" style={{ width: "40%" }} />
               </div>
               <span className="text-xs font-mono text-amber-600 w-24 text-right font-semibold">40% KAKAPO</span>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex-1 h-4 bg-surface-3 rounded-full overflow-hidden">
-                <div className="h-full bg-trust-high rounded-full" style={{ width: "60%" }} />
+                <div className="h-full bg-accent/50 rounded-full" style={{ width: "60%" }} />
               </div>
               <span className="text-xs font-mono text-trust-high w-24 text-right font-semibold">60% Chercheurs</span>
             </div>
