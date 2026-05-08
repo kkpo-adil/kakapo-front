@@ -28,7 +28,6 @@ interface PublisherStats {
   breakdown: PublicationBreakdown[];
 }
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 const MOCK_STATS: PublisherStats = {
   publisher: "Éditeur Partenaire",
