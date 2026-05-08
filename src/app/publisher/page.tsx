@@ -1,211 +1,200 @@
 "use client";
 
-import { useState } from "react";
-import { RevenueCalculator } from "@/components/enterprise/RevenueCalculator";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 
-interface PublisherDashboard {
-  publisher: {
-    name: string;
-    slug: string;
-    status: string;
-    contract_type: string;
-    revenue_share_pct: number;
-  };
-  balance: {
-    revenue_generated: number;
-    revenue_share_paid: number;
-    kpt_costs_pending: number;
-    revenue_share_pending: number;
-  };
-  stats: {
-    total_kpts: number;
-    active_kpts: number;
-    total_queries: number;
-    monthly_queries: number;
-    estimated_total_revenue: number;
-    estimated_monthly_revenue: number;
+interface PublicationBreakdown {
+  id: string;
+  title: string;
+  doi: string | null;
+  kpt_id: string | null;
+  trust_score: number | null;
+  vo_generated: number;
+  earnings_usd: number;
+  by_segment: {
+    llm: number;
+    pharma: number;
+    legal: number;
+    other: number;
   };
 }
 
-export default function PublisherDashboardPage() {
-  const [apiKey, setApiKey] = useState("");
-  const [data, setData] = useState<PublisherDashboard | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+interface PublisherStats {
+  publisher: string;
+  revenue_share_pct: number;
+  total_publications: number;
+  total_vo: number;
+  total_earnings_usd: number;
+  breakdown: PublicationBreakdown[];
+}
 
-  async function fetchDashboard() {
-    if (!apiKey.trim()) return;
-    setLoading(true);
-    setError("");
-    try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/publishers/me/dashboard`, {
-        headers: { "X-API-Key": apiKey },
-      });
-      if (!res.ok) throw new Error("Clé API invalide ou accès refusé");
-      setData(await res.json());
-    } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Erreur");
-    } finally {
-      setLoading(false);
-    }
-  }
+const API = process.env.NEXT_PUBLIC_API_URL ?? "";
+
+const MOCK_STATS: PublisherStats = {
+  publisher: "Éditeur Partenaire",
+  revenue_share_pct: 60,
+  total_publications: 16,
+  total_vo: 5,
+  total_earnings_usd: 1.20,
+  breakdown: [],
+};
+
+export default function PublisherDashboard() {
+  const [stats] = useState<PublisherStats>(MOCK_STATS);
+  const [activeTab, setActiveTab] = useState<"overview" | "publications" | "segments">("overview");
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-14">
-      <div className="inline-flex items-center gap-2 border border-accent/30 bg-accent/10 rounded px-3 py-1 mb-8">
-        <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-        <span className="text-2xs font-mono text-accent uppercase tracking-widest">Espace Éditeur</span>
+    <div className="max-w-5xl mx-auto px-6 py-10">
+      <div className="mb-8">
+        <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-1">Espace éditeur</p>
+        <h1 className="text-2xl font-display text-text-primary mb-1">{stats.publisher}</h1>
+        <p className="text-sm text-text-muted">Revenus générés par les LLMs sur votre corpus certifié — mis à jour en temps réel.</p>
       </div>
 
-      {!data ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div className="space-y-8">
-            <div>
-              <h1 className="text-3xl font-display text-text-primary mb-3 leading-tight">Monétisez votre corpus scientifique.</h1>
-              <p className="text-sm text-text-secondary leading-relaxed">
-                Accédez à votre dashboard en temps réel. KPTs certifiés, Verified Operations, revenus générés — tout en un seul endroit.
-              </p>
-            </div>
-
-            <div className="space-y-3">
-              <label className="text-2xs font-mono text-text-muted uppercase tracking-widest block">Clé API éditeur</label>
-              <input
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder="Votre clé API partenaire"
-                className="w-full bg-surface-3 border border-border rounded px-3 py-2 text-sm font-mono text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent"
-              />
-              <button
-                onClick={fetchDashboard}
-                disabled={loading || !apiKey.trim()}
-                className="w-full bg-accent hover:bg-accent-hover text-white text-sm font-mono px-4 py-2.5 rounded transition-colors disabled:opacity-50 cursor-pointer"
-              >
-                {loading ? "Chargement..." : "Accéder au dashboard"}
-              </button>
-              {error && <p className="text-xs font-mono text-trust-low">{error}</p>}
-            </div>
-
-            <div className="border border-border rounded-lg p-5 space-y-2">
-              <p className="text-2xs font-mono text-text-muted uppercase tracking-widest">Pas encore partenaire ?</p>
-              <p className="text-xs text-text-secondary leading-relaxed">
-                Contactez KAKAPO pour signer un accord de partenariat et certifier votre corpus scientifique.
-              </p>
-              <a href="mailto:partnerships@kakapo.io" className="text-xs font-mono text-accent hover:text-accent-hover no-underline">
-                partnerships@kakapo.io →
-              </a>
-            </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border rounded-lg overflow-hidden mb-8">
+        {[
+          { label: "Publications certifiées", value: stats.total_publications.toString(), color: "text-accent" },
+          { label: "Verified Operations", value: stats.total_vo.toString(), color: "text-accent" },
+          { label: "Revenus cumulés", value: `$${stats.total_earnings_usd.toFixed(4)}`, color: "text-text-primary" },
+          { label: "Part reversée", value: `${stats.revenue_share_pct}%`, color: "text-text-primary" },
+        ].map(({ label, value, color }) => (
+          <div key={label} className="bg-surface-2 px-5 py-4">
+            <p className={`text-2xl font-mono font-bold tabular-nums ${color}`}>{value}</p>
+            <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mt-1">{label}</p>
           </div>
+        ))}
+      </div>
 
-          <div className="space-y-6">
-            <div className="grid grid-cols-3 gap-px bg-border rounded-lg overflow-hidden">
-              {[
-                { title: "Émission gratuite", desc: "Aucun coût d'émission. KAKAPO génère vos KPT sans cession de droit." },
-                { title: "Partage 70/30", desc: "70 % des Verified Operations vous sont reversés mensuellement." },
-                { title: "Transparence temps réel", desc: "Dashboard détaillé par article, par segment, par type d'opération." },
-              ].map(({ title, desc }) => (
-                <div key={title} className="bg-surface-2 p-4">
-                  <p className="text-xs font-display text-text-primary mb-2">{title}</p>
-                  <p className="text-2xs text-text-muted leading-relaxed">{desc}</p>
-                </div>
-              ))}
-            </div>
+      <div className="flex gap-1 border-b border-border mb-6">
+        {[
+          { key: "overview", label: "Vue générale" },
+          { key: "publications", label: "Publications" },
+          { key: "segments", label: "Segments" },
+        ].map(tab => (
+          <button key={tab.key} onClick={() => setActiveTab(tab.key as typeof activeTab)}
+            className={`text-sm font-mono px-4 py-2.5 border-b-2 transition-colors cursor-pointer bg-transparent ${
+              activeTab === tab.key ? "border-accent text-accent" : "border-transparent text-text-muted hover:text-text-primary"
+            }`}>
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-            <RevenueCalculator />
-
-            <div className="border-l-4 rounded-r-lg p-5" style={{ borderColor: "#B45309", background: "rgba(180,83,9,0.04)" }}>
-              <p className="text-xs font-mono uppercase tracking-widest mb-2" style={{ color: "#B45309" }}>Conditions privilégiées — Premier signataire</p>
-              <p className="text-sm font-display text-text-primary mb-2">Voie pilote — 80/20 pendant 12 mois</p>
-              <p className="text-xs text-text-secondary leading-relaxed mb-3">
-                KAKAPO offre au premier éditeur de référence signataire un partage bonifié 80/20 pendant 12 mois, un accompagnement technique priorisé et une co-communication publique sur le partenariat. Cette voie est exclusive et fermée après signature.
-              </p>
-              <a href="mailto:partnerships@kakapo.io?subject=[KAKAPO] Demande term sheet éditeur pilote"
-                className="text-xs font-mono no-underline py-2 px-4 rounded border transition-colors inline-block"
-                style={{ borderColor: "#B45309", color: "#B45309" }}>
-                Demander un term sheet →
-              </a>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="space-y-8">
-          <div className="flex items-start justify-between">
-            <div>
-              <h1 className="text-2xl font-display text-text-primary">{data.publisher.name}</h1>
-              <div className="flex items-center gap-3 mt-1">
-                <span className="text-2xs font-mono text-trust-high border border-trust-high/30 rounded px-2 py-0.5">● {data.publisher.status}</span>
-                <span className="text-2xs font-mono text-text-muted">Revenue share {data.publisher.revenue_share_pct}%</span>
-                <span className="text-2xs font-mono text-text-muted">{data.publisher.contract_type}</span>
-              </div>
-            </div>
-            <button onClick={() => setData(null)}
-              className="text-xs font-mono text-text-muted hover:text-text-primary border border-border rounded px-3 py-1.5 transition-colors bg-transparent cursor-pointer">
-              Déconnexion
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border rounded-lg overflow-hidden">
-            {[
-              { label: "Revenus en attente", value: `€${data.balance.revenue_share_pending.toFixed(2)}`, highlight: true },
-              { label: "Revenus générés", value: `€${data.balance.revenue_generated.toFixed(2)}` },
-              { label: "Reversements effectués", value: `€${data.balance.revenue_share_paid.toFixed(2)}` },
-            ].map(({ label, value, highlight }) => (
-              <div key={label} className="bg-surface-2 p-6">
-                <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mb-2">{label}</p>
-                <p className={`text-2xl font-mono font-semibold ${highlight ? "text-trust-high" : "text-text-primary"}`}>{value}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-border rounded-lg overflow-hidden">
-            {[
-              { label: "KPTs actifs", value: data.stats.active_kpts },
-              { label: "KPTs total", value: data.stats.total_kpts },
-              { label: "VO ce mois", value: data.stats.monthly_queries },
-              { label: "VO total", value: data.stats.total_queries },
-            ].map(({ label, value }) => (
-              <div key={label} className="bg-surface-2 p-5">
-                <p className="text-xl font-mono font-semibold text-text-primary tabular-nums">{value}</p>
-                <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mt-1">{label}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="border border-border rounded-lg p-5">
-              <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mb-4">Estimation revenus</p>
+      {activeTab === "overview" && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="border border-border rounded-lg p-5 bg-surface-2">
+              <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-4">Modèle de revenus</p>
               <div className="space-y-3">
-                <div className="flex justify-between items-baseline">
-                  <span className="text-xs text-text-secondary">Ce mois</span>
-                  <span className="text-sm font-mono font-semibold text-text-primary">€{data.stats.estimated_monthly_revenue.toFixed(2)}</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-text-secondary">Prix par VO</span>
+                  <span className="font-mono font-bold text-text-primary">$0.40</span>
                 </div>
-                <div className="flex justify-between items-baseline">
-                  <span className="text-xs text-text-secondary">Total estimé</span>
-                  <span className="text-sm font-mono font-semibold text-text-primary">€{data.stats.estimated_total_revenue.toFixed(2)}</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-text-secondary">Votre part</span>
+                  <span className="font-mono font-bold text-accent">60% = $0.24</span>
                 </div>
-                <p className="text-2xs text-text-muted">Basé sur {data.publisher.revenue_share_pct}% des Verified Operations à €0.002/VO</p>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-text-secondary">Part KAKAPO</span>
+                  <span className="font-mono text-text-muted">40% = $0.16</span>
+                </div>
+                <div className="border-t border-border pt-3 flex justify-between items-center">
+                  <span className="text-sm font-semibold text-text-primary">Revenus totaux</span>
+                  <span className="font-mono font-bold text-text-primary text-lg">${stats.total_earnings_usd.toFixed(4)}</span>
+                </div>
               </div>
             </div>
-            <div className="border border-border rounded-lg p-5">
-              <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mb-4">Modèle de partage</p>
-              <div className="space-y-2">
+
+            <div className="border border-border rounded-lg p-5 bg-surface-2">
+              <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-4">Projection annuelle</p>
+              <div className="space-y-3">
                 {[
-                  { label: "Votre part", pct: data.publisher.revenue_share_pct, color: "bg-accent" },
-                  { label: "Part KAKAPO", pct: 100 - data.publisher.revenue_share_pct, color: "bg-surface-4" },
-                ].map(({ label, pct, color }) => (
-                  <div key={label}>
-                    <div className="flex justify-between text-2xs font-mono text-text-muted mb-1">
-                      <span>{label}</span><span>{pct}%</span>
-                    </div>
-                    <div className="h-2 bg-surface-3 rounded-full overflow-hidden">
-                      <div className={`h-full ${color} rounded-full`} style={{ width: `${pct}%` }} />
-                    </div>
+                  { label: "10K VO/mois", value: 10000 * 12 * 0.24 },
+                  { label: "100K VO/mois", value: 100000 * 12 * 0.24 },
+                  { label: "500K VO/mois", value: 500000 * 12 * 0.24 },
+                ].map(p => (
+                  <div key={p.label} className="flex justify-between items-center border-b border-border pb-2 last:border-0 last:pb-0">
+                    <span className="text-xs font-mono text-text-muted">{p.label}</span>
+                    <span className="font-mono font-bold text-text-primary">${(p.value / 1000).toFixed(0)}K/an</span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
+
+          <div className="border border-border rounded-lg p-5 bg-surface-3">
+            <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">Conditions partenaire</p>
+            <div className="grid grid-cols-3 gap-4">
+              {[
+                { label: "Émission KPT", value: "Gratuite", desc: "Aucun coût à l'émission" },
+                { label: "Cession de droits", value: "Aucune", desc: "Votre corpus reste le vôtre" },
+                { label: "Reversement", value: "Mensuel", desc: "Virement automatique" },
+              ].map(c => (
+                <div key={c.label}>
+                  <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mb-1">{c.label}</p>
+                  <p className="text-sm font-display text-text-primary font-semibold">{c.value}</p>
+                  <p className="text-2xs text-text-muted mt-0.5">{c.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
+
+      {activeTab === "publications" && (
+        <div>
+          <p className="text-xs text-text-muted mb-4">{stats.total_publications} publications certifiées dans votre catalogue.</p>
+          <div className="border border-border rounded-lg overflow-hidden">
+            <div className="grid grid-cols-4 gap-4 px-4 py-2 bg-surface-3 text-2xs font-mono text-text-muted uppercase tracking-widest">
+              <span className="col-span-2">Publication</span>
+              <span className="text-right">VO</span>
+              <span className="text-right">Revenus</span>
+            </div>
+            <div className="divide-y divide-border">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <div key={i} className="grid grid-cols-4 gap-4 px-4 py-3 items-center hover:bg-surface-3 transition-colors">
+                  <div className="col-span-2">
+                    <p className="text-xs text-text-primary truncate">Publication #{i + 1}</p>
+                    <p className="text-2xs font-mono text-text-muted">KPT-11111111000{i + 1}-v1</p>
+                  </div>
+                  <p className="text-xs font-mono text-text-secondary text-right">0 VO</p>
+                  <p className="text-xs font-mono font-bold text-text-primary text-right">$0.0000</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "segments" && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { label: "LLM", icon: "⚡", desc: "Modèles de langage", vo: 3, revenue: 0.72 },
+            { label: "Pharma", icon: "🔬", desc: "Biotech & Pharma", vo: 1, revenue: 0.24 },
+            { label: "Legal", icon: "⚖️", desc: "Cabinets juridiques", vo: 1, revenue: 0.24 },
+            { label: "Institutions", icon: "🎓", desc: "Universités & Labs", vo: 0, revenue: 0.00 },
+          ].map(s => (
+            <div key={s.label} className="border border-border rounded-lg p-4 bg-surface-2">
+              <div className="flex items-center gap-2 mb-3">
+                <span className="text-lg">{s.icon}</span>
+                <span className="text-sm font-display text-text-primary">{s.label}</span>
+              </div>
+              <p className="text-2xs text-text-muted mb-3">{s.desc}</p>
+              <p className="text-xl font-mono font-bold text-accent">${s.revenue.toFixed(4)}</p>
+              <p className="text-2xs font-mono text-text-muted">{s.vo} VO</p>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-8 text-center">
+        <p className="text-2xs text-text-muted">
+          Pas encore partenaire ?{" "}
+          <Link href="/publisher/contact" className="text-accent hover:text-accent-hover no-underline">
+            Demander un accord de partenariat →
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }
