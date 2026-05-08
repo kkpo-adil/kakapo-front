@@ -1,88 +1,170 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import { EnterpriseTierCard } from "@/components/enterprise/EnterpriseTierCard";
+
+const FEATURES = [
+  {
+    title: "Audit trail FDA/EMA",
+    desc: "Chaque source citée par un LLM dans un dossier réglementaire est tracée cryptographiquement. KPT ID + hash SHA-256 + timestamp UTC.",
+    icon: "🔬",
+  },
+  {
+    title: "Export PDF signé RSA-PSS",
+    desc: "Chaque réponse IA est exportable en PDF signé, versable dans un dossier clinique ou réglementaire.",
+    icon: "📄",
+  },
+  {
+    title: "Compliance Module",
+    desc: "Module dédié aux équipes réglementaires : vérification en masse, historique des consultations, rapport d'audit mensuel.",
+    icon: "✅",
+  },
+  {
+    title: "Anti-hallucination par construction",
+    desc: "Le LLM ne peut pas citer une source qui n'existe pas dans KAKAPO. Zéro référence inventée dans vos dossiers.",
+    icon: "🛡️",
+  },
+  {
+    title: "Sources certifiées Phase 3",
+    desc: "KEYNOTE-355, ASCENT, EMPAMY et d'autres essais cliniques Phase 3 indexés avec leurs DOIs et hash vérifiables.",
+    icon: "💊",
+  },
+  {
+    title: "Verified Operation",
+    desc: "Facturation à l'usage — vous ne payez que les vérifications effectivement réalisées. Pas d'abonnement fixe aveugle.",
+    icon: "⚡",
+  },
+];
+
+const PRICING = [
+  { name: "Starter", vo: "10K VO/mois", price: "4 000 USD/mois", desc: "Équipes réglementaires < 10 personnes" },
+  { name: "Professional", vo: "50K VO/mois", price: "18 000 USD/mois", desc: "Département médical complet + Compliance Module" },
+  { name: "Enterprise", vo: "Illimité", price: "Sur devis", desc: "Intégration API complète + SLA + audit trail dédié" },
+];
 
 export default function PharmaPage() {
-  return (
-    <div>
-      <section className="border-b border-border bg-surface-2">
-        <div className="max-w-5xl mx-auto px-6 py-20">
-          <p className="text-2xs font-mono uppercase tracking-widest mb-4" style={{ color: "#0F766E" }}>For Pharma & Biotech</p>
-          <h1 className="text-4xl font-display text-text-primary mb-5 max-w-2xl leading-tight">Provenance scientifique opposable, pour vos dossiers réglementaires.</h1>
-          <p className="text-base text-text-secondary leading-relaxed mb-8 max-w-2xl">
-            Réduisez de 70 % le temps de validation manuelle de sources scientifiques. KPT cryptographique intégrable dans vos dossiers FDA, EMA, ANSM.
-          </p>
-          <Link href="/pharma/contact" className="no-underline inline-block text-white text-sm font-mono px-6 py-3 rounded transition-colors" style={{ background: "#0F766E" }}>Request a regulatory demo</Link>
-        </div>
-      </section>
+  const [activeTab, setActiveTab] = useState<"features" | "pricing" | "usecases">("features");
 
-      <section className="max-w-5xl mx-auto px-6 py-16">
-        <p className="text-2xs font-mono uppercase tracking-widest mb-2" style={{ color: "#0F766E" }}>Cas d&apos;usage</p>
-        <h2 className="text-2xl font-display text-text-primary mb-8">4 use cases couverts.</h2>
+  return (
+    <div className="max-w-5xl mx-auto px-6 py-10">
+      <div className="mb-10">
+        <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">Pharma & Biotech</p>
+        <h1 className="text-3xl font-display text-text-primary mb-3 leading-tight max-w-2xl">
+          Des sources scientifiques vérifiables dans vos dossiers réglementaires.
+        </h1>
+        <p className="text-sm text-text-secondary leading-relaxed max-w-2xl mb-6">
+          KAKAPO certifie cryptographiquement les publications scientifiques citées par vos LLMs.
+          Chaque source est traçable, opposable et exportable en PDF signé pour la FDA, l'EMA ou tout régulateur.
+        </p>
+        <div className="flex gap-3">
+          <Link href="/pharma/contact" className="no-underline inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-sm px-5 py-2.5 rounded transition-colors">
+            Demander une démo →
+          </Link>
+          <Link href="/demo" className="no-underline inline-flex items-center gap-2 border border-border text-text-secondary hover:text-text-primary text-sm px-5 py-2.5 rounded transition-colors">
+            Voir la démo live
+          </Link>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-px bg-border rounded-lg overflow-hidden mb-10">
+        {[
+          { value: "0", label: "Hallucination de source possible" },
+          { value: "SHA-256", label: "Hash cryptographique par source" },
+          { value: "PDF signé", label: "Export réglementaire en 1 clic" },
+        ].map(({ value, label }) => (
+          <div key={label} className="bg-surface-2 px-6 py-4">
+            <p className="text-xl font-mono font-bold text-accent">{value}</p>
+            <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mt-1">{label}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex gap-1 border-b border-border mb-8">
+        {[
+          { key: "features", label: "Fonctionnalités" },
+          { key: "usecases", label: "Cas d'usage" },
+          { key: "pricing", label: "Tarification" },
+        ].map(tab => (
+          <button key={tab.key} onClick={() => setActiveTab(tab.key as typeof activeTab)}
+            className={`text-sm font-mono px-4 py-2.5 border-b-2 transition-colors cursor-pointer bg-transparent ${
+              activeTab === tab.key ? "border-accent text-accent" : "border-transparent text-text-muted hover:text-text-primary"
+            }`}>
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {activeTab === "features" && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[
-            { title: "Dossiers d'autorisation FDA / EMA", desc: "Versez les KPT en preuve d'antériorité et d'intégrité des sources scientifiques citées dans vos dossiers." },
-            { title: "Periodic Safety Update Reports (PSUR)", desc: "Traçabilité cryptographique des sources de pharmacovigilance. Audit trail signé." },
-            { title: "Audit des claims marketing médicaux", desc: "Vérification automatique de l'antériorité et de l'intégrité des publications citées dans vos supports promotionnels médicaux." },
-            { title: "Veille concurrentielle structurée", desc: "Surveillez les publications scientifiques par pathologie, indication, principe actif, avec certification d'antériorité." },
-          ].map(({ title, desc }) => (
-            <div key={title} className="border border-border rounded-lg p-5" style={{ borderLeft: "3px solid #0F766E" }}>
-              <h3 className="text-sm font-display text-text-primary mb-2">{title}</h3>
-              <p className="text-xs text-text-muted leading-relaxed">{desc}</p>
+          {FEATURES.map(f => (
+            <div key={f.title} className="border border-border rounded-lg p-5 bg-surface-2">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl flex-shrink-0">{f.icon}</span>
+                <div>
+                  <h3 className="text-sm font-display text-text-primary mb-1">{f.title}</h3>
+                  <p className="text-xs text-text-muted leading-relaxed">{f.desc}</p>
+                </div>
+              </div>
             </div>
           ))}
         </div>
-      </section>
+      )}
 
-      <section className="border-t border-b border-border bg-surface-3">
-        <div className="max-w-5xl mx-auto px-6 py-16">
-          <p className="text-2xs font-mono uppercase tracking-widest mb-2" style={{ color: "#0F766E" }}>Le ROI</p>
-          <h2 className="text-2xl font-display text-text-primary mb-10">Combien KAKAPO vous fait économiser.</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border rounded-lg overflow-hidden mb-8">
-            {[
-              { value: "100 €/h", legend: "Coût horaire chargé d'un pharmacien réglementaire ou medical writer senior." },
-              { value: "20 min", legend: "Temps moyen de vérification manuelle d'une source scientifique." },
-              { value: "70–90 %", legend: "Réduction de la charge de validation humaine sur les sources tracées par KPT." },
-            ].map(({ value, legend }) => (
-              <div key={value} className="bg-surface-2 p-6 text-center">
-                <p className="text-3xl font-display text-accent mb-3">{value}</p>
-                <p className="text-xs text-text-muted leading-relaxed">{legend}</p>
+      {activeTab === "usecases" && (
+        <div className="space-y-4">
+          {[
+            {
+              title: "Dossier de soumission réglementaire FDA",
+              context: "Une équipe affaires réglementaires utilise un LLM pour rédiger un dossier clinique.",
+              problem: "Sans KAKAPO : le LLM cite une méta-analyse qui n'existe pas. Le dossier est rejeté.",
+              solution: "Avec KAKAPO : chaque citation est un KPT certifié avec hash SHA-256. Le dossier est auditable.",
+            },
+            {
+              title: "Veille scientifique en oncologie",
+              context: "Une équipe R&D interroge quotidiennement les dernières publications en oncologie.",
+              problem: "Sans KAKAPO : les sources sont génériques, non vérifiables, parfois obsolètes.",
+              solution: "Avec KAKAPO : les essais Phase 3 (KEYNOTE-355, ASCENT...) sont indexés avec leurs DOIs réels.",
+            },
+            {
+              title: "Formation médicale continue",
+              context: "Un département formation utilise un LLM pour générer des cas cliniques.",
+              problem: "Sans KAKAPO : les références bibliographiques sont invérifiables.",
+              solution: "Avec KAKAPO : chaque référence est vérifiable sur kakapo.io en temps réel.",
+            },
+          ].map(uc => (
+            <div key={uc.title} className="border border-border rounded-lg p-5 bg-surface-2">
+              <h3 className="text-sm font-display text-text-primary mb-3">{uc.title}</h3>
+              <p className="text-xs text-text-muted mb-2">{uc.context}</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-trust-low/5 border border-trust-low/20 rounded p-3">
+                  <p className="text-2xs font-mono text-trust-low uppercase mb-1">Sans KAKAPO</p>
+                  <p className="text-xs text-text-muted">{uc.problem}</p>
+                </div>
+                <div className="bg-trust-high/5 border border-trust-high/20 rounded p-3">
+                  <p className="text-2xs font-mono text-trust-high uppercase mb-1">Avec KAKAPO</p>
+                  <p className="text-xs text-text-muted">{uc.solution}</p>
+                </div>
               </div>
-            ))}
-          </div>
-          <div className="bg-surface-2 border border-border rounded-lg p-6 text-center max-w-2xl mx-auto">
-            <p className="text-sm text-text-secondary leading-relaxed">Pour une équipe de 10 medical writers traitant 200 sources par semaine, KAKAPO représente une économie estimée de <strong className="text-text-primary">200 000 à 350 000 € par an</strong> — pour un coût KAKAPO largement inférieur.</p>
-          </div>
+            </div>
+          ))}
         </div>
-      </section>
+      )}
 
-      <section className="max-w-5xl mx-auto px-6 py-16">
-        <div className="border rounded-lg p-6 mb-12" style={{ borderColor: "#B45309", borderLeftWidth: "4px" }}>
-          <h3 className="text-lg font-display text-text-primary mb-4">Module Compliance — pour vos dossiers réglementaires</h3>
-          <ul className="space-y-2 mb-4">
-            {["Audit trail signé cryptographiquement, exportable", "Exports 21 CFR Part 11 ready", "Versionnage opposable des consultations", "Provenance reports horodatés au format PDF signé"].map(item => (
-              <li key={item} className="flex items-start gap-2 text-sm text-text-secondary">
-                <span style={{ color: "#B45309" }}>✓</span> {item}
-              </li>
-            ))}
-          </ul>
-          <p className="text-xs text-text-muted italic">Module disponible sur les abonnements Big Pharma, Mid Pharma et Biotech & Devices.</p>
-        </div>
-        <p className="text-2xs font-mono uppercase tracking-widest mb-2" style={{ color: "#0F766E" }}>Formules</p>
-        <h2 className="text-2xl font-display text-text-primary mb-8">Trois formules adaptées à votre structure.</h2>
+      {activeTab === "pricing" && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <EnterpriseTierCard tierName="Big Pharma" tierTagline="Top 25 mondial" description="R&D > 5 Md USD. Corpus massif, exigences réglementaires maximales." components={["Enterprise License", "Verified Operations quota", "Compliance Module inclus", "Audit trail FDA/EMA"]} engagement="24 mois" ctaLabel="Talk to our regulatory team" ctaHref="/pharma/contact" accent="pharma" />
-          <EnterpriseTierCard tierName="Mid Pharma" tierTagline="Pharma régionaux" description="R&D 500 M – 5 Md USD. Spécialisation thérapeutique, cycle réglementaire actif." components={["Enterprise License", "Verified Operations quota", "Compliance Module en option", "Audit trail"]} engagement="24 mois" ctaLabel="Talk to our regulatory team" ctaHref="/pharma/contact" accent="pharma" />
-          <EnterpriseTierCard tierName="Biotech & Devices" tierTagline="Biotechs & dispositifs" description="Biotechs en croissance, dispositifs médicaux, diagnostics." components={["Starter License", "Verified Operations quota", "Compliance Module en option"]} engagement="12 mois" ctaLabel="Talk to our regulatory team" ctaHref="/pharma/contact" accent="pharma" />
+          {PRICING.map((p, i) => (
+            <div key={p.name} className={`border rounded-lg p-5 ${i === 1 ? "border-accent bg-accent/5" : "border-border bg-surface-2"}`}>
+              <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">{p.name}</p>
+              <p className="text-xl font-mono font-bold text-text-primary mb-1">{p.price}</p>
+              <p className="text-xs font-mono text-text-muted mb-3">{p.vo}</p>
+              <p className="text-xs text-text-muted leading-relaxed mb-4">{p.desc}</p>
+              <Link href="/pharma/contact" className="no-underline block text-center text-xs font-mono border border-accent text-accent hover:bg-accent hover:text-white py-2 rounded transition-colors">
+                Demander un devis →
+              </Link>
+            </div>
+          ))}
         </div>
-      </section>
-
-      <section className="border-t border-border bg-surface-3">
-        <div className="max-w-5xl mx-auto px-6 py-16 text-center">
-          <h2 className="text-2xl font-display text-text-primary mb-3">Voyez KAKAPO appliqué à votre cas d&apos;usage.</h2>
-          <p className="text-sm text-text-secondary mb-8 max-w-xl mx-auto">Notre équipe regulatory affairs vous accompagne sur une démo personnalisée.</p>
-          <Link href="/pharma/contact" className="no-underline text-white text-sm font-mono px-8 py-3 rounded transition-colors" style={{ background: "#0F766E" }}>Demander une démo →</Link>
-        </div>
-      </section>
+      )}
     </div>
   );
 }

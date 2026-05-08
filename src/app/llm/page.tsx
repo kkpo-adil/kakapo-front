@@ -1,81 +1,133 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
-import { EnterpriseTierCard } from "@/components/enterprise/EnterpriseTierCard";
 
 export default function LLMPage() {
-  return (
-    <div>
-      <section className="border-b border-border bg-surface-2">
-        <div className="max-w-5xl mx-auto px-6 py-20">
-          <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-4">For AI Providers</p>
-          <h1 className="text-4xl font-display text-text-primary mb-5 max-w-2xl leading-tight">Vendez une IA opposable.</h1>
-          <p className="text-base text-text-secondary leading-relaxed mb-8 max-w-2xl">
-            KAKAPO certifie chaque source utilisée par votre modèle. Ouvrez les marchés enterprise régulés que vous ne pouvez pas adresser sans elle.
-          </p>
-          <div className="flex gap-3 flex-wrap">
-            <Link href="/llm/contact" className="no-underline bg-accent hover:bg-accent-hover text-white text-sm font-mono px-6 py-3 rounded transition-colors">Talk to our enterprise team</Link>
-            <Link href="/api-access" className="no-underline border border-border hover:border-accent text-text-secondary hover:text-accent text-sm font-mono px-6 py-3 rounded transition-colors">Voir la documentation API</Link>
-          </div>
-        </div>
-      </section>
+  const [activeTab, setActiveTab] = useState<"features" | "integration" | "pricing">("features");
 
-      <section className="max-w-5xl mx-auto px-6 py-16">
-        <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">Pourquoi les LLM choisissent KAKAPO</p>
-        <h2 className="text-2xl font-display text-text-primary mb-8">Trois avantages structurels.</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border rounded-lg overflow-hidden">
+  return (
+    <div className="max-w-5xl mx-auto px-6 py-10">
+      <div className="mb-10">
+        <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">LLM & IA</p>
+        <h1 className="text-3xl font-display text-text-primary mb-3 leading-tight max-w-2xl">
+          Rendez vos réponses IA vérifiables et opposables.
+        </h1>
+        <p className="text-sm text-text-secondary leading-relaxed max-w-2xl mb-6">
+          KAKAPO est l'infrastructure qui permet à votre LLM de citer des sources certifiées cryptographiquement.
+          Aucune hallucination de référence possible. Chaque citation est un KPT vérifiable avec hash SHA-256.
+        </p>
+        <div className="flex gap-3">
+          <Link href="/llm/contact" className="no-underline inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-sm px-5 py-2.5 rounded transition-colors">
+            Accès API →
+          </Link>
+          <Link href="/demo" className="no-underline inline-flex items-center gap-2 border border-border text-text-secondary hover:text-text-primary text-sm px-5 py-2.5 rounded transition-colors">
+            Voir la démo live
+          </Link>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-3 gap-px bg-border rounded-lg overflow-hidden mb-10">
+        {[
+          { value: "< 200ms", label: "Latence API" },
+          { value: "720+", label: "Publications indexées" },
+          { value: "SHA-256", label: "Hash par source" },
+        ].map(({ value, label }) => (
+          <div key={label} className="bg-surface-2 px-6 py-4">
+            <p className="text-xl font-mono font-bold text-accent">{value}</p>
+            <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mt-1">{label}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex gap-1 border-b border-border mb-8">
+        {[
+          { key: "features", label: "Fonctionnalités" },
+          { key: "integration", label: "Intégration" },
+          { key: "pricing", label: "Tarification" },
+        ].map(tab => (
+          <button key={tab.key} onClick={() => setActiveTab(tab.key as typeof activeTab)}
+            className={`text-sm font-mono px-4 py-2.5 border-b-2 transition-colors cursor-pointer bg-transparent ${
+              activeTab === tab.key ? "border-accent text-accent" : "border-transparent text-text-muted hover:text-text-primary"
+            }`}>
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {activeTab === "features" && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
-            { title: "Sources opposables", desc: "Chaque réponse générée par votre modèle peut citer une source KPT-certifiée, vérifiable cryptographiquement, exploitable dans un contexte régulé." },
-            { title: "Marchés enterprise débloqués", desc: "Pharma, legal, finance, secteurs régulés : ces clients ne peuvent pas consommer une IA non traçable. KAKAPO rend votre modèle éligible." },
-            { title: "Latence < 200 ms", desc: "Infrastructure conçue pour l'inférence temps réel. Vérification cryptographique sans dégradation de l'expérience utilisateur." },
-          ].map(({ title, desc }) => (
-            <div key={title} className="bg-surface-2 p-6">
-              <h3 className="text-sm font-display text-text-primary mb-3">{title}</h3>
-              <p className="text-xs text-text-muted leading-relaxed">{desc}</p>
+            { title: "Tool calling forcé", desc: "Votre LLM est contraint d'appeler search_kakapo avant de répondre. Il ne peut pas inventer une référence absente du catalogue.", icon: "🔒" },
+            { title: "Catalogue certifié", desc: "16 KPT certifiés avec vrais hash SHA-256 + 704 i-KPT indexés. Essais Phase 3, publications Nature, arXiv.", icon: "📚" },
+            { title: "Trust Score", desc: "Chaque publication a un score de fiabilité calculé sur 6 composantes : source, données, citations, fraîcheur, cohérence, reviews.", icon: "📊" },
+            { title: "API REST documentée", desc: "Endpoints stables, Pydantic v2, OpenAPI auto-générée, latence < 200ms. Intégration en moins de 2 heures.", icon: "⚡" },
+            { title: "Export PDF signé", desc: "Chaque réponse peut être exportée en PDF signé RSA-PSS. Vérifiable avec la clé publique KAKAPO.", icon: "📄" },
+            { title: "Verified Operation", desc: "Facturation à la VO — vous payez uniquement les vérifications effectuées. Pas de forfait aveugle.", icon: "💳" },
+          ].map(f => (
+            <div key={f.title} className="border border-border rounded-lg p-5 bg-surface-2">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl flex-shrink-0">{f.icon}</span>
+                <div>
+                  <h3 className="text-sm font-display text-text-primary mb-1">{f.title}</h3>
+                  <p className="text-xs text-text-muted leading-relaxed">{f.desc}</p>
+                </div>
+              </div>
             </div>
           ))}
         </div>
-      </section>
+      )}
 
-      <section className="border-t border-b border-border bg-surface-3">
-        <div className="max-w-5xl mx-auto px-6 py-16">
-          <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">Niveaux d&apos;engagement</p>
-          <h2 className="text-2xl font-display text-text-primary mb-8">Trois niveaux d'engagement.</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <EnterpriseTierCard tierName="Tier 3" tierTagline="Vertical & Specialized" description="Pour les LLM verticaux et spécialisés (santé, droit, recherche). Cycle de signature court, focus sectoriel." components={["Annual Access License", "Verified Operations quota", "Compliance Module inclus"]} engagement="12 mois" ctaLabel="Talk to our enterprise team" ctaHref="/llm/contact" accent="llm" />
-            <EnterpriseTierCard tierName="Tier 2" tierTagline="Regional & Sovereign" description="Pour les LLM régionaux ou souverains adressant un marché national ou européen avec exigences spécifiques." components={["Annual Access License", "Verified Operations quota", "Compliance Module en option"]} engagement="12 mois" ctaLabel="Talk to our enterprise team" ctaHref="/llm/contact" accent="llm" />
-            <EnterpriseTierCard tierName="Tier 1" tierTagline="Global Frontier" description="Pour les LLM foundationaux globaux servant des millions de requêtes scientifiques par jour." components={["Annual Access License", "Verified Operations quota", "Compliance Module enterprise", "SLA dédié"]} engagement="24 mois, renouvelable" ctaLabel="Talk to our enterprise team" ctaHref="/llm/contact" accent="llm" />
-          </div>
-        </div>
-      </section>
-
-      <section className="max-w-5xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div>
-            <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">L&apos;unité KAKAPO</p>
-            <h2 className="text-xl font-display text-text-primary mb-4">La Verified Operation</h2>
-            <p className="text-sm text-text-secondary leading-relaxed">Une VO correspond à une vérification effective d&apos;un claim, d&apos;une citation ou d&apos;une référence contre le catalogue certifié, indépendamment du nombre de requêtes utilisateurs en amont. Cette unité aligne le pricing sur la valeur réellement livrée.</p>
-          </div>
-          <div>
-            <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">Intégration</p>
-            <h2 className="text-xl font-display text-text-primary mb-6">Comment ça s&apos;intègre</h2>
-            <div className="space-y-3">
-              {["Votre LLM reçoit une requête utilisateur", "Récupération RAG sur vos sources", "API KAKAPO — vérification de provenance", "Réponse augmentée avec KPT cités"].map((step, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <span className="text-2xs font-mono text-accent border border-accent/30 rounded px-1.5 py-0.5 flex-shrink-0 mt-0.5">{String(i+1).padStart(2,"0")}</span>
-                  <p className="text-sm text-text-secondary">{step}</p>
+      {activeTab === "integration" && (
+        <div className="space-y-6">
+          <div className="border border-border rounded-lg p-5 bg-surface-2">
+            <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-3">Intégration en 3 étapes</p>
+            <div className="space-y-4">
+              {[
+                { step: "01", title: "Clé API", desc: "Générez votre clé API depuis votre espace LLM. Quotas configurables par segment." },
+                { step: "02", title: "Tool definition", desc: "Ajoutez le tool search_kakapo dans votre système de tool calling. Documentation complète fournie." },
+                { step: "03", title: "Tool choice forcé", desc: "Configurez tool_choice pour forcer l'appel search_kakapo avant chaque réponse scientifique." },
+              ].map(s => (
+                <div key={s.step} className="flex gap-4">
+                  <span className="text-2xl font-mono font-bold text-accent/30 flex-shrink-0">{s.step}</span>
+                  <div>
+                    <p className="text-sm font-display text-text-primary mb-1">{s.title}</p>
+                    <p className="text-xs text-text-muted leading-relaxed">{s.desc}</p>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
+          <div className="border border-border rounded-lg p-5 bg-surface-3">
+            <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-3">Endpoint principal</p>
+            <code className="text-xs font-mono text-text-primary block">POST /demo/query</code>
+            <code className="text-xs font-mono text-text-muted block mt-1">{"{ question: string, with_kakapo: boolean }"}</code>
+            <Link href="/about/api" className="text-xs font-mono text-accent mt-3 block no-underline hover:text-accent-hover">
+              Documentation complète →
+            </Link>
+          </div>
         </div>
-      </section>
+      )}
 
-      <section className="border-t border-border bg-surface-3">
-        <div className="max-w-5xl mx-auto px-6 py-16 text-center">
-          <h2 className="text-2xl font-display text-text-primary mb-3">Prêt à explorer ce que KAKAPO peut apporter à votre stack ?</h2>
-          <p className="text-sm text-text-secondary mb-8 max-w-xl mx-auto">Notre équipe enterprise vous accompagne sur l&apos;évaluation technique et commerciale.</p>
-          <Link href="/llm/contact" className="no-underline bg-accent hover:bg-accent-hover text-white text-sm font-mono px-8 py-3 rounded transition-colors">Demander un contact →</Link>
+      {activeTab === "pricing" && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {[
+            { name: "Startup", vo: "50K VO/mois", price: "500 USD/mois", desc: "LLMs verticaux, startups IA" },
+            { name: "Scale", vo: "500K VO/mois", price: "4 000 USD/mois", desc: "LLMs mid-market + support prioritaire", highlight: true },
+            { name: "Foundational", vo: "Illimité", price: "Sur devis", desc: "Mistral, OpenAI niveau — contrat annuel" },
+          ].map(p => (
+            <div key={p.name} className={`border rounded-lg p-5 ${"highlight" in p && p.highlight ? "border-accent bg-accent/5" : "border-border bg-surface-2"}`}>
+              <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">{p.name}</p>
+              <p className="text-xl font-mono font-bold text-text-primary mb-1">{p.price}</p>
+              <p className="text-xs font-mono text-text-muted mb-3">{p.vo}</p>
+              <p className="text-xs text-text-muted leading-relaxed mb-4">{p.desc}</p>
+              <Link href="/llm/contact" className="no-underline block text-center text-xs font-mono border border-accent text-accent hover:bg-accent hover:text-white py-2 rounded transition-colors">
+                Demander un accès →
+              </Link>
+            </div>
+          ))}
         </div>
-      </section>
+      )}
     </div>
   );
 }
