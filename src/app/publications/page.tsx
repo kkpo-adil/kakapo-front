@@ -11,7 +11,6 @@ const SOURCES = [
   { value: "arxiv", label: "arXiv" },
   { value: "hal", label: "HAL" },
   { value: "europepmc", label: "Europe PMC" },
-  { value: "pubmed", label: "PubMed" },
   { value: "direct_deposit", label: "Dépôt direct" },
 ];
 
