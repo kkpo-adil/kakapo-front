@@ -10,8 +10,9 @@ const SOURCES = [
   { value: "", label: "Toutes sources" },
   { value: "arxiv", label: "arXiv" },
   { value: "hal", label: "HAL" },
-  { value: "direct", label: "Dépôt direct" },
-  { value: "nature", label: "Nature" },
+  { value: "europepmc", label: "Europe PMC" },
+  { value: "pubmed", label: "PubMed" },
+  { value: "direct_deposit", label: "Dépôt direct" },
 ];
 
 const SORTS = [
