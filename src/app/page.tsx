@@ -48,7 +48,7 @@ async function getHomeData(): Promise<{
 }
 
 export default async function HomePage() {
-  const [{ recent, scores, kpts, fromMock }, stats] = await Promise.all([
+  const [{ recent, scores, kpts }, stats] = await Promise.all([
     getHomeData(),
     getStats(),
   ]);
