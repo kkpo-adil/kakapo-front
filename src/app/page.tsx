@@ -119,9 +119,7 @@ export default async function HomePage() {
               ))
             )}
           </div>
-          {fromMock && (
-            <p className="text-2xs font-mono text-trust-mid mt-2">Données de démonstration</p>
-          )}
+
         </div>
       </section>
 
