@@ -1,7 +1,7 @@
 import type { ApiError } from "@/types/api";
 
 const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+  (process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app") ?? "http://localhost:8000";
 
 export class KakapoApiError extends Error {
   status: number;

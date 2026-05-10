@@ -23,7 +23,7 @@ interface PublicationEarning {
   kakapo_earnings_usd: number;
 }
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "";
+const API = (process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app") ?? "";
 
 const DEMO_PUBLICATIONS = [
   "11111111-0001-0001-0001-000000000001",

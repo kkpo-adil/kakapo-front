@@ -46,7 +46,7 @@ export default function PublicationsPage() {
   const [stats, setStats] = useState<PublicationStats | null>(null);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/publications/summary/stats`)
+    fetch(`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/publications/summary/stats`)
       .then(r => r.json()).then(d => setStats(d)).catch(() => null);
   }, []);
 
@@ -59,14 +59,14 @@ export default function PublicationsPage() {
       if (sortBy) params.set("sort_by", sortBy);
       if (kptStatus) params.set("kpt_status", kptStatus);
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/publications/?${params}`);
+      const res = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/publications/?${params}`);
       const list = await res.json();
       const pubs: Publication[] = list.items || list || [];
       const total: number = list.total ?? pubs.length;
 
       const [scoresArr, kptsArr] = await Promise.all([
-        Promise.all(pubs.map(p => fetch(`${process.env.NEXT_PUBLIC_API_URL}/trust/score/${p.id}`).then(r => r.ok ? r.json() : null).catch(() => null))),
-        Promise.all(pubs.map(p => fetch(`${process.env.NEXT_PUBLIC_API_URL}/kpt/publication/${p.id}`).then(r => r.ok ? r.json() : null).catch(() => null))),
+        Promise.all(pubs.map(p => fetch(`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/trust/score/${p.id}`).then(r => r.ok ? r.json() : null).catch(() => null))),
+        Promise.all(pubs.map(p => fetch(`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/kpt/publication/${p.id}`).then(r => r.ok ? r.json() : null).catch(() => null))),
       ]);
 
       const scores: Record<string, TrustScore> = {};

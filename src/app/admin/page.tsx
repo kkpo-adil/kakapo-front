@@ -23,7 +23,7 @@ interface KakapoStats {
   recent_transactions: VOTransaction[];
 }
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "";
+const API = (process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app") ?? "";
 
 export default function AdminDashboard() {
   const [stats, setStats] = useState<KakapoStats | null>(null);

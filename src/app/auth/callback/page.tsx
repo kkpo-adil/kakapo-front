@@ -17,7 +17,7 @@ function CallbackContent() {
       return;
     }
     localStorage.setItem("kakapo_token", token);
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+    fetch(`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => r.json())

@@ -56,7 +56,7 @@ export default function AboutAPIPage() {
         <Link href="/api-access" className="no-underline inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-sm px-5 py-2.5 rounded transition-colors">
           Créer une clé API →
         </Link>
-        <a href={`${process.env.NEXT_PUBLIC_API_URL}/docs`} target="_blank" rel="noopener noreferrer"
+        <a href={`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/docs`} target="_blank" rel="noopener noreferrer"
           className="no-underline inline-flex items-center gap-2 border border-border hover:border-accent/40 text-text-secondary hover:text-accent text-sm px-5 py-2.5 rounded transition-colors">
           Documentation complète →
         </a>

@@ -20,7 +20,7 @@ export function OptoutModal({ publicationId, publicationTitle, onClose }: Optout
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/publications/${publicationId}/optout`, {
+      const res = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/publications/${publicationId}/optout`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reason, contact_email: email }),

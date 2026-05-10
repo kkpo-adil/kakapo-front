@@ -124,7 +124,7 @@ export function Header() {
             </>
           ) : (
             <>
-              <a href={`${process.env.NEXT_PUBLIC_API_URL}/auth/orcid/login`} className="text-xs font-mono text-text-secondary hover:text-text-primary border border-border rounded px-3 py-1.5 no-underline transition-colors hover:border-border-strong">
+              <a href={`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/auth/orcid/login`} className="text-xs font-mono text-text-secondary hover:text-text-primary border border-border rounded px-3 py-1.5 no-underline transition-colors hover:border-border-strong">
                 Connexion
               </a>
               <div className="relative" ref={accountRef}>
@@ -140,7 +140,7 @@ export function Header() {
                 {accountOpen && (
                   <div className="absolute right-0 top-full mt-2 w-64 bg-surface-2 border border-border rounded-lg shadow-lg overflow-hidden z-50">
                     <div className="p-2">
-                      <a href={`${process.env.NEXT_PUBLIC_API_URL}/auth/orcid/login`} className="flex items-start gap-3 p-3 rounded-md hover:bg-surface-3 no-underline transition-colors group" onClick={() => setAccountOpen(false)}>
+                      <a href={`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/auth/orcid/login`} className="flex items-start gap-3 p-3 rounded-md hover:bg-surface-3 no-underline transition-colors group" onClick={() => setAccountOpen(false)}>
                         <div className="w-7 h-7 rounded bg-accent/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                           <span className="text-2xs font-mono text-accent font-bold">OR</span>
                         </div>

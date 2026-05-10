@@ -77,7 +77,7 @@ export function ReviewPanel({ publicationId }: ReviewPanelProps) {
   useEffect(() => {
     const token = localStorage.getItem("kakapo_token");
     setIsConnected(!!token);
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews/${publicationId}`)
+    fetch(`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/reviews/${publicationId}`)
       .then((r) => r.json())
       .then((data) => { setReviews(data); setLoading(false); })
       .catch(() => setLoading(false));
@@ -89,7 +89,7 @@ export function ReviewPanel({ publicationId }: ReviewPanelProps) {
     setSubmitting(true);
     setError("");
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/reviews/${publicationId}`, {
+      const res = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/reviews/${publicationId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ ...form, comment: form.comment || null }),
@@ -138,7 +138,7 @@ export function ReviewPanel({ publicationId }: ReviewPanelProps) {
         )}
         {!isConnected && (
           <a
-            href={`${process.env.NEXT_PUBLIC_API_URL}/auth/orcid/login`}
+            href={`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/auth/orcid/login`}
             className="text-xs font-mono border border-border rounded px-3 py-1.5 text-text-muted hover:text-accent hover:border-accent/40 transition-colors no-underline"
           >
             Connexion pour reviewer

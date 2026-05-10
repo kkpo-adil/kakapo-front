@@ -38,7 +38,7 @@ export default function CertifierPage() {
     setError("");
     try {
       const encoded = encodeURIComponent(doi);
-      const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/publications/crossref/${encoded}`);
+      const r = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/publications/crossref/${encoded}`);
       if (!r.ok) throw new Error("DOI introuvable sur CrossRef");
       const data = await r.json();
       setCrossref({ ...data, doi });
@@ -65,7 +65,7 @@ export default function CertifierPage() {
       if (crossref?.authors?.length) formData.append("authors_raw", JSON.stringify(crossref.authors));
       if (crossref?.institution) formData.append("institution_raw", crossref.institution);
       formData.append("source", "direct");
-      const uploadRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/publications/upload`, {
+      const uploadRes = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/publications/upload`, {
         method: "POST",
         body: formData,
       });
@@ -74,7 +74,7 @@ export default function CertifierPage() {
         throw new Error(err.detail || "Erreur upload");
       }
       const pub = await uploadRes.json();
-      const kptRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/kpt/issue`, {
+      const kptRes = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/kpt/issue`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ publication_id: pub.id }),

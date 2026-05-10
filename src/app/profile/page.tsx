@@ -42,7 +42,7 @@ export default function ProfilePage() {
     if (!token) { router.push("/"); return; }
     const payload = decodeJWT(token);
     if (!payload) { router.push("/"); return; }
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+    fetch(`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => { if (!r.ok) throw new Error("Session expirée"); return r.json(); })
@@ -55,7 +55,7 @@ export default function ProfilePage() {
     if (!token || !profile) return;
     setSaving(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+      const res = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/auth/me`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({

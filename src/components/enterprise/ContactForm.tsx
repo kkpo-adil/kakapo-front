@@ -58,7 +58,7 @@ export function ContactForm({ segment, fields, submitLabel }: ContactFormProps) 
     setLoading(true);
     setSubmitError("");
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contact`, {
+      const res = await fetch(`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/contact`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ segment, payload: values, rgpd_consent: true }),

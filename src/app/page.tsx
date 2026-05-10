@@ -7,7 +7,7 @@ import type { Publication, TrustScore, KPT, PublicationStats } from "@/types/api
 async function getStats(): Promise<PublicationStats | null> {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/publications/summary/stats`,
+      `${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/publications/summary/stats`,
       { next: { revalidate: 60 } }
     );
     if (!res.ok) return null;

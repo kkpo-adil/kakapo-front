@@ -87,12 +87,12 @@ export default function ApiAccessPage() {
          <div className="bg-surface-3 border border-border rounded-lg p-5">
            <p className="text-xs font-mono text-text-muted uppercase tracking-widest mb-3">Documentation complète</p>
            <a
-             href={`${process.env.NEXT_PUBLIC_API_URL}/docs`}
+             href={`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/docs`}
              target="_blank"
              rel="noopener noreferrer"
              className="text-xs font-mono text-accent hover:text-accent-hover no-underline"
            >
-             {`${process.env.NEXT_PUBLIC_API_URL}/docs`} →
+             {`${(process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app")}/docs`} →
            </a>
          </div>
        </section>

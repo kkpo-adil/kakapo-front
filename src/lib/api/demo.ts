@@ -1,6 +1,6 @@
 import type { DemoResult, DemoQueryRequest, DemoHealth } from "@/types/demo";
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "https://kakapo-back-production.up.railway.app";
+const API = (process.env.NEXT_PUBLIC_API_URL || "https://kakapo-back-production.up.railway.app") ?? "https://kakapo-back-production.up.railway.app";
 const TIMEOUT = 30000;
 
 async function fetchWithTimeout(url: string, options: RequestInit, signal?: AbortSignal): Promise<Response> {
