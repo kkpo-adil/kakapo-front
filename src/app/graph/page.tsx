@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: "Visualisation des relations entre publications scientifiques KAKAPO.",
 };
 
+export const dynamic = 'force-dynamic';
+
 async function fetchGraphData(): Promise<{
   publications: Publication[];
   scores: TrustScore[];
