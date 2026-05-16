@@ -70,8 +70,8 @@ export default function EnterprisePage() {
         <div className="border border-border p-10">
           <div className="mb-8">
             <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mb-2">Segment 02 — Pharma & Biotech</p>
-            <h2 className="text-2xl font-display text-text-primary mb-1">0,0004% du coût d'un dossier FDA.</h2>
-            <p className="text-sm font-mono text-text-muted">500 sources vérifiées × 0,40 USD = 200 USD. Sur un dossier à 50M USD.</p>
+            <h2 className="text-2xl font-display text-text-primary mb-1">200 USD sur un dépôt FDA à 4,3M USD.</h2>
+            <p className="text-sm font-mono text-text-muted">500 sources vérifiées × 0,40 USD. Frais de dépôt FDA 2025 : 4 348 000 USD.</p>
           </div>
 
           <div className="grid grid-cols-2 gap-px bg-border mb-8">
