@@ -1,10 +1,10 @@
 import Link from "next/link";
 
-export default function EnterprisePage() {
+export default function EntreprisePage() {
   return (
     <div className="max-w-4xl mx-auto px-6 py-16">
       <div className="mb-16">
-        <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-3">Enterprise</p>
+        <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-3">Entreprise</p>
         <h1 className="text-4xl font-display text-text-primary mb-4 leading-tight">
           L'infrastructure de confiance<br />pour l'IA scientifique.
         </h1>
@@ -94,7 +94,7 @@ export default function EnterprisePage() {
           href="mailto:partnerships@kakapo.io"
           className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-sm font-mono px-8 py-3 rounded transition-colors no-underline"
         >
-          Contacter l'équipe Enterprise →
+          Contacter l'équipe Entreprise →
         </a>
         <p className="text-2xs text-text-muted mt-4">Réponse sous 24h</p>
       </div>
