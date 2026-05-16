@@ -66,12 +66,40 @@ export function DemoAnswerDisplay({ result, loading, error }: DemoAnswerDisplayP
         </div>
       </div>
 
-      <div className="text-sm text-text-secondary leading-relaxed space-y-2">
-        {result.answer_text.split("\n").filter(Boolean).map((line, i) => (
-          <p key={i} className={line.startsWith("##") ? "font-display text-text-primary font-semibold mt-4" : ""}>
-            {line.replace(/^##+ /, "").replace(/\*\*/g, "")}
-          </p>
-        ))}
+      <div className="text-sm text-text-secondary leading-relaxed space-y-3">
+        {result.answer_text.split("\n").filter(Boolean).map((line, i) => {
+          if (line.startsWith("### ")) return (
+            <p key={i} className="font-display text-text-primary font-semibold text-base mt-4">
+              {line.replace(/^###+ /, "")}
+            </p>
+          );
+          if (line.startsWith("## ")) return (
+            <p key={i} className="font-display text-text-primary font-bold text-lg mt-6 border-b border-border pb-1">
+              {line.replace(/^##+ /, "")}
+            </p>
+          );
+          if (line.startsWith("**") && line.endsWith("**")) return (
+            <p key={i} className="font-semibold text-text-primary mt-2">
+              {line.replace(/\*\*/g, "")}
+            </p>
+          );
+          if (line.startsWith("- ") || line.startsWith("* ")) return (
+            <div key={i} className="flex gap-2 ml-4">
+              <span className="text-accent mt-1 flex-shrink-0">→</span>
+              <p>{line.replace(/^[\-\*] /, "").replace(/\*\*/g, "")}</p>
+            </div>
+          );
+          if (line.match(/^\d+\. /)) return (
+            <div key={i} className="flex gap-2 ml-2">
+              <span className="text-accent font-mono font-semibold flex-shrink-0">{line.match(/^(\d+)\./)![1]}.</span>
+              <p>{line.replace(/^\d+\. /, "").replace(/\*\*/g, "")}</p>
+            </div>
+          );
+          const formatted = line.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>").replace(/\[([^\]]+)\]/g, "<span class=\"text-accent font-mono text-2xs\">[$1]</span>");
+          return (
+            <p key={i} dangerouslySetInnerHTML={{__html: formatted}} />
+          );
+        })}
       </div>
 
       {isKakapo && result.cited_kpts.length > 0 && (
