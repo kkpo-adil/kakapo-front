@@ -6,13 +6,10 @@ import { useEffect, useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 const SOLUTIONS = [
-  { href: "/certifier", title: "Pour les chercheurs", desc: "Certifiez vos publications gratuitement" },
-  { href: "/publisher", title: "Pour les éditeurs", desc: "Monétisez votre corpus scientifique" },
-  { href: "/entreprise", title: "Vue d'ensemble Entreprise", desc: "LLMs, Pharma, Legal — une seule infrastructure" },
-  { href: "/llm", title: "Pour les LLM", desc: "Sources opposables pour vos modèles" },
-  { href: "/pharma", title: "Pour la pharma", desc: "Provenance réglementaire opposable" },
-  { href: "/legal-finance", title: "Pour le legal/finance", desc: "Preuve cryptographique scientifique" },
-  { href: "/institutions", title: "Pour les institutions", desc: "Site license et accès chercheurs" },
+  { href: "/llm", title: "LLMs & Plateformes IA", desc: "Marchés régulés, provenance indépendante, intégration API" },
+  { href: "/publisher", title: "Éditeurs scientifiques", desc: "Certifiez votre corpus et générez des revenus à chaque accès LLM" },
+  { href: "/chercheurs", title: "Chercheurs & Auteurs", desc: "Vérifiez si votre publication est certifiée" },
+  { href: "/entreprise", title: "Cas d'usage", desc: "Pharma, Legal, Finance — traçabilité des sources" },
 ];
 
 function decodeJWT(token: string) {
