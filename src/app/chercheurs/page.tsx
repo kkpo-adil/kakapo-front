@@ -14,7 +14,7 @@ const IKPT_FEATURES = [
   { label: "Certification", value: "Automatique via éditeur" },
   { label: "Hash", value: "SHA-256 texte intégral" },
   { label: "Droits", value: "Éditeur + auteur selon contrat" },
-  { label: "Revenu", value: "Revenue share via l'éditeur" },
+  { label: "Revenu", value: "Royalties via l'éditeur" },
   { label: "Démarche", value: "Aucune — automatique" },
 ];
 
@@ -151,7 +151,7 @@ export default function ChercheursPage() {
               </div>
               <p className="text-sm text-text-secondary leading-relaxed mb-4">
                 Publication déposée directement par l'auteur sur KAKAPO.
-                Validation par les pairs. Revenu direct sans intermédiaire.
+                Validation par les pairs. Royalties directes sans intermédiaire.
               </p>
               <div className="space-y-2">
                 {KPT_FEATURES.map(({ label, value }) => (
@@ -265,7 +265,7 @@ export default function ChercheursPage() {
               { title: "Dépôt direct", desc: "Via DOI existant ou upload PDF. KAKAPO vérifie l'authenticité et génère le KPT." },
               { title: "Validation par les pairs", desc: "Des chercheurs de votre domaine valident votre dépôt avant certification officielle." },
               { title: "Identifiant KPT officiel", desc: "Votre publication reçoit un KPT unique — plus fiable qu'un i-KPT car validé par des pairs indépendants." },
-              { title: "Revenu direct", desc: "Chaque accès par un LLM génère un micropaiement automatique — sans intermédiaire éditeur." },
+              { title: "Revenu direct", desc: "Chaque accès par un LLM génère des royalties automatiques — sans intermédiaire éditeur." },
             ].map(({ title, desc }) => (
               <div key={title} className="border border-border rounded-lg p-4 bg-surface-1">
                 <p className="text-sm font-display text-text-primary mb-1">{title}</p>

@@ -34,7 +34,8 @@ export default function PublisherPage() {
         <p className="text-sm text-text-secondary leading-relaxed max-w-xl mb-8">
           KAKAPO certifie vos publications et reverse une part des revenus
           à chaque fois qu'un système IA interroge votre corpus.
-          Vous ne distribuez pas vos contenus — vous les certifiez.
+          Vous ne distribuez pas votre catalogue — vous le certifiez.
+Comme un label qui dépose ses masters : les droits restent les vôtres, les royalties arrivent à chaque stream.
         </p>
         <div className="flex flex-wrap gap-2">
           {TABS.map(t => (
@@ -168,13 +169,13 @@ export default function PublisherPage() {
               Revenue share
             </p>
             <p className="text-sm text-text-secondary leading-relaxed mb-4">
-              Chaque accès à une publication certifiée génère une Verified Operation.
+              Chaque accès à une publication certifiée génère une stream certifié.
               KAKAPO reverse une part directement à l'éditeur partenaire
               selon le volume d'accès généré par son corpus.
               Transparent. Traçable. Automatique.
             </p>
             <p className="text-2xs text-text-muted">
-              Le taux de revenue share exact se fixe dans le contrat de partenariat
+              Le taux de royalties exact se fixe dans le contrat de partenariat
               selon le volume et le domaine scientifique.
             </p>
           </div>
