@@ -17,7 +17,7 @@ export default function ChercheursPage() {
         <div className="flex flex-wrap gap-3 mt-8">
           <Link href="/certifier"
             className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-sm font-mono px-6 py-3 rounded transition-colors no-underline">
-            Déposer ma publication →
+            Certifier ma publication →
           </Link>
           <Link href="/publications"
             className="inline-flex items-center gap-2 border border-border hover:border-accent/30 text-text-secondary hover:text-text-primary text-sm font-mono px-6 py-3 rounded transition-colors no-underline">
@@ -57,7 +57,7 @@ export default function ChercheursPage() {
           <p className="text-sm text-text-secondary leading-relaxed mb-5">
             Déposez directement votre preprint ou publication Open Access.
             Validation par les pairs. Certification en 24h.
-            Vous êtes rémunéré directement — sans intermédiaire — à chaque citation IA.
+            Vous êtes rémunéré directement — sans intermédiaire.
           </p>
           <div className="space-y-2 mb-6">
             <p className="text-2xs text-text-muted">✓ Validation par les pairs sur KAKAPO</p>
@@ -73,47 +73,45 @@ export default function ChercheursPage() {
       </div>
 
       <div className="border border-border rounded-xl p-8 mb-16">
-        <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mb-8">Comment ça marche</p>
+        <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mb-8">
+          KAKAPO certifie le parcours complet d'un article
+        </p>
+        <p className="text-sm text-text-secondary leading-relaxed max-w-2xl mb-8">
+          Un article scientifique a souvent deux vies : le preprint déposé sur arXiv ou bioRxiv,
+          puis la publication finale peer-reviewed dans un journal.
+          KAKAPO lie les deux versions et certifie chaque étape du parcours.
+        </p>
         <div className="divide-y divide-border">
           <div className="py-6 flex gap-6">
             <span className="text-2xl font-display font-bold text-accent flex-shrink-0 w-8">01</span>
             <div>
-              <p className="text-sm font-semibold text-text-primary mb-1">Déposez votre publication</p>
+              <p className="text-sm font-semibold text-text-primary mb-1">Preprint déposé sur arXiv / bioRxiv</p>
               <p className="text-sm text-text-secondary">
-                Via DOI ou upload PDF. KAKAPO récupère automatiquement les métadonnées
-                via CrossRef et vérifie l'authenticité du contenu.
+                KAKAPO certifie le contenu avec hash SHA-256 et horodatage cryptographique.
+                C'est la preuve d'antériorité — votre travail existait à cette date précise.
+                Vous gardez vos droits. Vous êtes rémunéré à chaque citation.
               </p>
             </div>
           </div>
           <div className="py-6 flex gap-6">
             <span className="text-2xl font-display font-bold text-accent flex-shrink-0 w-8">02</span>
             <div>
-              <p className="text-sm font-semibold text-text-primary mb-1">Validation par les pairs</p>
+              <p className="text-sm font-semibold text-text-primary mb-1">Publication finale dans un journal</p>
               <p className="text-sm text-text-secondary">
-                Des chercheurs de votre domaine valident votre dépôt.
-                Une fois validé, KAKAPO génère un certificat cryptographique unique.
+                KAKAPO certifie la version peer-reviewed et lie automatiquement
+                le preprint à la publication finale via les métadonnées CrossRef.
+                Le parcours complet de l'article est traçable et vérifiable.
               </p>
             </div>
           </div>
           <div className="py-6 flex gap-6">
             <span className="text-2xl font-display font-bold text-accent flex-shrink-0 w-8">03</span>
             <div>
-              <p className="text-sm font-semibold text-text-primary mb-1">Votre publication est certifiée</p>
+              <p className="text-sm font-semibold text-text-primary mb-1">Les LLMs citent toujours la bonne version</p>
               <p className="text-sm text-text-secondary">
-                Hash SHA-256 du texte intégral. Signature RSA-PSS.
-                Votre publication est intégrée au catalogue KAKAPO
-                et accessible aux LLMs du monde entier.
-              </p>
-            </div>
-          </div>
-          <div className="py-6 flex gap-6">
-            <span className="text-2xl font-display font-bold text-accent flex-shrink-0 w-8">04</span>
-            <div>
-              <p className="text-sm font-semibold text-text-primary mb-1">Vous êtes rémunéré à chaque accès</p>
-              <p className="text-sm text-text-secondary">
-                Chaque fois qu'un LLM interroge KAKAPO pour citer votre publication,
-                un micropaiement automatique est versé sur votre compte.
-                Transparent. Traçable. Automatique.
+                KAKAPO sait quelle version a été citée, quand elle existait,
+                et si le contenu a évolué entre le preprint et la publication finale.
+                La réponse IA est précise, traçable et admissible.
               </p>
             </div>
           </div>
