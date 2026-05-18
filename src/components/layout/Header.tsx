@@ -103,12 +103,12 @@ export function Header() {
                 </div>
               )}
             </div>
-            <Link href="/publications" className={cn("px-3 py-1.5 rounded text-sm no-underline transition-all", pathname.startsWith("/publications") ? "bg-accent/10 text-accent" : "text-text-secondary hover:text-text-primary hover:bg-surface-3")}>
-              Explorer
+            <Link href="/demo" className={cn("px-3 py-1.5 rounded text-sm no-underline transition-all", pathname.startsWith("/demo") ? "bg-accent/10 text-accent" : "text-text-secondary hover:text-text-primary hover:bg-surface-3")}>
+              Démo live
             </Link>
-            <Link href="/verify" className={cn("px-3 py-1.5 rounded text-sm no-underline transition-all", pathname.startsWith("/verify") ? "bg-accent/10 text-accent" : "text-text-secondary hover:text-text-primary hover:bg-surface-3")}>
-              Vérifier un KPT
-            </Link>
+            <a href="mailto:partnerships@kakapo.io" className="px-3 py-1.5 rounded text-sm no-underline transition-all text-text-secondary hover:text-text-primary hover:bg-surface-3">
+              Contact
+            </a>
           </div>
         </div>
 
