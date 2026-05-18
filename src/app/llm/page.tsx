@@ -3,131 +3,283 @@
 import { useState } from "react";
 import Link from "next/link";
 
+const MARKETS = [
+  { name: "Santé & Médical", size: "$11,000B", color: "#22c55e", icon: "⚕", desc: "Diagnostics, protocoles cliniques, recommandations thérapeutiques" },
+  { name: "Pharma & Biotech", size: "$1,500B", color: "#3b82f6", icon: "🔬", desc: "R&D, dossiers FDA/EMA, drug discovery" },
+  { name: "Legal & Compliance", size: "$900B", color: "#f59e0b", icon: "⚖", desc: "Due diligence, contentieux scientifiques, brevets" },
+  { name: "Finance & Assurance", size: "$2,000B", color: "#8b5cf6", icon: "📊", desc: "Risk scoring, valorisation biotech, actuariat" },
+  { name: "Défense & Sécurité", size: "$700B", color: "#ef4444", icon: "🛡", desc: "Veille scientifique sécurisée, R&D défense" },
+];
+
+const TIMELINE = [
+  { date: "Jan 2024", event: "Preprint déposé sur bioRxiv", type: "preprint", doi: "10.1101/2024.01.15.123456", note: "Auteur garde ses droits — certifiable directement" },
+  { date: "Mar 2024", event: "Peer review — 3 reviewers indépendants", type: "review", note: "Processus de validation externe" },
+  { date: "Jun 2024", event: "Publication finale — Nature Medicine", type: "published", doi: "10.1038/s41591-024-03156-x", note: "Droits cédés à Springer" },
+  { date: "Jun 2024", event: "KAKAPO certifie les deux versions et lie le parcours", type: "certified", note: "Hash SHA-256 + lien CrossRef relation" },
+  { date: "Aujourd'hui", event: "LLM cite la version peer-reviewed certifiée", type: "cited", note: "Source traçable, vérifiable, admissible" },
+];
+
+const CODE_SNIPPET = `const response = await fetch(
+  "https://api.kakapo.io/v1/certify",
+  {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer YOUR_API_KEY",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      query: "Efficacy of SGLT2 inhibitors in heart failure",
+      max_sources: 5
+    })
+  }
+);
+
+const { sources, certified_at } = await response.json();
+// sources[0].kpt_id → "KPT-3F7A8B2C-PMC-PMC9876543"
+// sources[0].hash   → "sha256:3f7a8b2c..."
+// sources[0].doi    → "10.1056/NEJMoa2022186"`;
+
 export default function LLMPage() {
-  const [activeTab, setActiveTab] = useState<"features" | "integration" | "pricing">("features");
+  const [activeTab, setActiveTab] = useState<"market" | "trace" | "why" | "integration">("market");
+  const [openMarket, setOpenMarket] = useState<number | null>(null);
+
+  const tabs = [
+    { id: "market", label: "Marché" },
+    { id: "trace", label: "Parcours article" },
+    { id: "why", label: "Neutralité" },
+    { id: "integration", label: "Intégration" },
+  ];
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-10">
-      <div className="mb-10">
-        <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">LLM & IA</p>
-        <h1 className="text-3xl font-display text-text-primary mb-3 leading-tight max-w-2xl">
-          Rendez vos réponses IA vérifiables et opposables.
-        </h1>
-        <p className="text-sm text-text-secondary leading-relaxed max-w-2xl mb-6">
-          KAKAPO est l'infrastructure qui permet à votre LLM de citer des sources certifiées cryptographiquement.
-          Aucune hallucination de référence possible. Chaque citation est un KPT vérifiable avec hash SHA-256.
+    <div className="max-w-3xl mx-auto px-6 py-16">
+
+      <div className="mb-12">
+        <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mb-4">
+          LLMs & Plateformes IA
         </p>
-        <div className="flex gap-3">
-          <Link href="/llm/contact" className="no-underline inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-sm px-5 py-2.5 rounded transition-colors">
-            Accès API →
-          </Link>
-          <Link href="/demo" className="no-underline inline-flex items-center gap-2 border border-border text-text-secondary hover:text-text-primary text-sm px-5 py-2.5 rounded transition-colors">
-            Voir la démo live
-          </Link>
+        <h1 className="text-3xl font-display text-text-primary leading-tight mb-5 max-w-2xl">
+          Les marchés régulés exigent des sources vérifiables par un tiers indépendant.
+        </h1>
+        <p className="text-sm text-text-secondary leading-relaxed max-w-xl mb-8">
+          KAKAPO ajoute une couche de provenance indépendante sur les sources scientifiques
+          de votre LLM — certification cryptographique, parcours complet preprint
+          vers publication finale, audit trail exploitable.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          {tabs.map(t => (
+            <button
+              key={t.id}
+              onClick={() => setActiveTab(t.id as typeof activeTab)}
+              className="text-2xs font-mono uppercase tracking-widest px-4 py-2 rounded transition-colors"
+              style={{
+                background: activeTab === t.id ? "var(--color-accent)" : "transparent",
+                color: activeTab === t.id ? "#fff" : "var(--color-text-muted)",
+                border: activeTab === t.id ? "1px solid var(--color-accent)" : "1px solid var(--color-border)",
+              }}
+            >
+              {t.label}
+            </button>
+          ))}
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-px bg-border rounded-lg overflow-hidden mb-10">
-        {[
-          { value: "< 200ms", label: "Latence API" },
-          { value: "720+", label: "Publications indexées" },
-          { value: "SHA-256", label: "Hash par source" },
-        ].map(({ value, label }) => (
-          <div key={label} className="bg-surface-2 px-6 py-4">
-            <p className="text-xl font-mono font-bold text-accent">{value}</p>
-            <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mt-1">{label}</p>
+      {activeTab === "market" && (
+        <div>
+          <p className="text-sm text-text-secondary leading-relaxed max-w-xl mb-8">
+            Ces secteurs ne signent pas avec un LLM qui ne peut pas prouver ses sources.
+            Un LLM ne peut pas certifier ses propres sources — conflit d'intérêt structurel.
+            KAKAPO est le tiers indépendant.
+          </p>
+          <div className="space-y-2 mb-10">
+            {MARKETS.map((m, i) => (
+              <div
+                key={i}
+                className="border rounded-lg cursor-pointer transition-all"
+                style={{
+                  borderColor: openMarket === i ? m.color + "66" : "var(--color-border)",
+                  background: "var(--color-surface-1)",
+                }}
+                onClick={() => setOpenMarket(openMarket === i ? null : i)}
+              >
+                <div className="p-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">{m.icon}</span>
+                    <div>
+                      <p className="text-sm font-display text-text-primary">{m.name}</p>
+                      <p className="text-2xs text-text-muted">{m.desc}</p>
+                    </div>
+                  </div>
+                  <div className="text-right flex-shrink-0 ml-4">
+                    <p className="text-sm font-mono font-bold" style={{ color: m.color }}>{m.size}</p>
+                    <p className="text-2xs text-text-muted">marché total</p>
+                  </div>
+                </div>
+                {openMarket === i && (
+                  <div className="px-4 pb-4 pt-0">
+                    <div className="border-t border-border pt-3">
+                      <p className="text-2xs text-text-muted mb-1">Avec KAKAPO</p>
+                      <p className="text-sm text-text-secondary">
+                        Chaque réponse de votre LLM cite des sources certifiées,
+                        horodatées, vérifiables par tout auditeur indépendant.
+                        Vos clients enterprise dans ce secteur peuvent signer.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+          <div className="border border-border rounded-lg p-5 bg-surface-1">
+            <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mb-2">Contexte réglementaire</p>
+            <p className="text-sm text-text-secondary leading-relaxed">
+              EU AI Act — obligations de traçabilité actives depuis août 2025 pour les modèles GPAI.
+              Pleine entrée en vigueur août 2026. Chine — Interim Measures en vigueur depuis 2023.
+              USA — réglementations sectorielles FDA, SEC, HIPAA.
+            </p>
+          </div>
+        </div>
+      )}
 
-      <div className="flex gap-1 border-b border-border mb-8">
-        {[
-          { key: "features", label: "Fonctionnalités" },
-          { key: "integration", label: "Intégration" },
-          { key: "pricing", label: "Tarification" },
-        ].map(tab => (
-          <button key={tab.key} onClick={() => setActiveTab(tab.key as typeof activeTab)}
-            className={`text-sm font-mono px-4 py-2.5 border-b-2 transition-colors cursor-pointer bg-transparent ${
-              activeTab === tab.key ? "border-accent text-accent" : "border-transparent text-text-muted hover:text-text-primary"
-            }`}>
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {activeTab === "features" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[
-            { title: "Tool calling forcé", desc: "Votre LLM est contraint d'appeler search_kakapo avant de répondre. Il ne peut pas inventer une référence absente du catalogue.", icon: "🔒" },
-            { title: "Catalogue certifié", desc: "16 KPT certifiés avec vrais hash SHA-256 + 704 i-KPT indexés. Essais Phase 3, publications Nature, arXiv.", icon: "📚" },
-            { title: "Trust Score", desc: "Chaque publication a un score de fiabilité calculé sur 6 composantes : source, données, citations, fraîcheur, cohérence, reviews.", icon: "📊" },
-            { title: "API REST documentée", desc: "Endpoints stables, Pydantic v2, OpenAPI auto-générée, latence < 200ms. Intégration en moins de 2 heures.", icon: "⚡" },
-            { title: "Export PDF signé", desc: "Chaque réponse peut être exportée en PDF signé RSA-PSS. Vérifiable avec la clé publique KAKAPO.", icon: "📄" },
-            { title: "Verified Operation", desc: "Facturation à la VO — vous payez uniquement les vérifications effectuées. Pas de forfait aveugle.", icon: "💳" },
-          ].map(f => (
-            <div key={f.title} className="border border-border rounded-lg p-5 bg-surface-2">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl flex-shrink-0">{f.icon}</span>
-                <div>
-                  <h3 className="text-sm font-display text-text-primary mb-1">{f.title}</h3>
-                  <p className="text-xs text-text-muted leading-relaxed">{f.desc}</p>
+      {activeTab === "trace" && (
+        <div>
+          <p className="text-sm text-text-secondary leading-relaxed max-w-xl mb-8">
+            KAKAPO certifie le parcours complet d'un article scientifique —
+            du preprint initial jusqu'à la publication peer-reviewed finale.
+            CrossRef sait que le lien existe. KAKAPO certifie le contenu à chaque étape.
+          </p>
+          <div className="relative mb-8">
+            {TIMELINE.map((item, i) => (
+              <div key={i} className="flex gap-4">
+                <div className="flex flex-col items-center min-w-5">
+                  <div
+                    className="w-2.5 h-2.5 rounded-full flex-shrink-0 mt-4"
+                    style={{
+                      background: item.type === "certified" ? "var(--color-accent)" : item.type === "cited" ? "#8b5cf6" : "#334155",
+                    }}
+                  />
+                  {i < TIMELINE.length - 1 && (
+                    <div className="w-px flex-1 bg-border mt-1 mb-1" style={{ minHeight: 28 }} />
+                  )}
+                </div>
+                <div
+                  className="flex-1 border rounded-lg p-4 mb-2"
+                  style={{
+                    borderColor: item.type === "certified" ? "var(--color-accent)" : "var(--color-border)",
+                    background: "var(--color-surface-1)",
+                  }}
+                >
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
+                    <span className="text-2xs text-text-muted">{item.date}</span>
+                    {item.doi && (
+                      <span className="text-2xs font-mono text-text-muted">DOI: {item.doi}</span>
+                    )}
+                  </div>
+                  <p className="text-sm text-text-primary mb-1">{item.event}</p>
+                  <p className="text-2xs text-text-muted">{item.note}</p>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+          <div className="border border-accent/30 rounded-lg p-5 bg-surface-1">
+            <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">
+              Ce que KAKAPO est le seul à pouvoir dire
+            </p>
+            <p className="text-sm text-text-secondary leading-relaxed">
+              "Cette réponse est basée sur la version peer-reviewed publiée dans Nature Medicine
+              en juin 2024, qui est la version finale du preprint déposé en janvier 2024.
+              La version citée est la plus récente et la plus validée.
+              Le contenu n'a pas été modifié depuis certification."
+            </p>
+            <p className="text-2xs text-text-muted mt-3">
+              CrossRef sait que le lien existe. CrossRef ne certifie pas le contenu.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {activeTab === "why" && (
+        <div>
+          <p className="text-sm text-text-secondary leading-relaxed max-w-xl mb-8">
+            Un LLM ne peut pas certifier ses propres sources d'entraînement.
+            Un éditeur ne peut pas auditer ses propres publications.
+            La neutralité de KAKAPO est structurelle — pas déclarative.
+          </p>
+          <div className="grid grid-cols-1 gap-4 mb-8">
+            {[
+              {
+                title: "Conflit d'intérêt structurel",
+                content: "OpenAI a entraîné GPT sur des publications scientifiques. Elle ne peut pas certifier ces mêmes sources — juge et partie. Ce n'est pas une question d'intention. C'est une question de structure.",
+                color: "#ef4444",
+              },
+              {
+                title: "Neutralité de KAKAPO",
+                content: "KAKAPO n'est ni éditeur, ni LLM, ni chercheur. Il n'a aucun intérêt dans le contenu qu'il certifie. C'est la seule position qui permet une certification indépendante crédible.",
+                color: "#22c55e",
+              },
+            ].map((item, i) => (
+              <div key={i} className="border rounded-lg p-5 bg-surface-1" style={{ borderColor: item.color + "33" }}>
+                <p className="text-sm font-display text-text-primary mb-2">{item.title}</p>
+                <p className="text-sm text-text-secondary leading-relaxed">{item.content}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mb-4">Même principe que</p>
+          <div className="grid grid-cols-3 gap-3">
+            {[
+              { name: "SWIFT", desc: "Standard neutre partagé entre banques concurrentes. Personne ne peut l'internaliser sans perdre la neutralité." },
+              { name: "HTTPS", desc: "Standard ouvert. Google, Apple et Microsoft l'utilisent ensemble. La neutralité est la valeur." },
+              { name: "Visa", desc: "Les banques émettent des cartes mais délèguent les transactions à une couche neutre indispensable." },
+            ].map((item, i) => (
+              <div key={i} className="border border-border rounded-lg p-4 bg-surface-1">
+                <p className="text-sm font-display font-bold text-accent mb-2">{item.name}</p>
+                <p className="text-2xs text-text-muted leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
       {activeTab === "integration" && (
-        <div className="space-y-6">
-          <div className="border border-border rounded-lg p-5 bg-surface-2">
-            <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-3">Intégration en 3 étapes</p>
-            <div className="space-y-4">
-              {[
-                { step: "01", title: "Clé API", desc: "Générez votre clé API depuis votre espace LLM. Quotas configurables par segment." },
-                { step: "02", title: "Tool definition", desc: "Ajoutez le tool search_kakapo dans votre système de tool calling. Documentation complète fournie." },
-                { step: "03", title: "Tool choice forcé", desc: "Configurez tool_choice pour forcer l'appel search_kakapo avant chaque réponse scientifique." },
-              ].map(s => (
-                <div key={s.step} className="flex gap-4">
-                  <span className="text-2xl font-mono font-bold text-accent/30 flex-shrink-0">{s.step}</span>
-                  <div>
-                    <p className="text-sm font-display text-text-primary mb-1">{s.title}</p>
-                    <p className="text-xs text-text-muted leading-relaxed">{s.desc}</p>
-                  </div>
-                </div>
-              ))}
+        <div>
+          <p className="text-sm text-text-secondary leading-relaxed max-w-xl mb-8">
+            Un endpoint. Une clé API. Les réponses de votre LLM deviennent certifiées,
+            traçables et auditables — sans modifier votre architecture existante.
+          </p>
+          <div className="border border-border rounded-lg overflow-hidden mb-8">
+            <div className="border-b border-border px-4 py-2 flex items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-text-muted/30" />
+              <p className="text-2xs font-mono text-text-muted">kakapo-integration.ts</p>
             </div>
+            <pre className="p-5 overflow-x-auto text-2xs font-mono text-text-secondary leading-relaxed bg-surface-1">
+              <code>{CODE_SNIPPET}</code>
+            </pre>
           </div>
-          <div className="border border-border rounded-lg p-5 bg-surface-3">
-            <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-3">Endpoint principal</p>
-            <code className="text-xs font-mono text-text-primary block">POST /demo/query</code>
-            <code className="text-xs font-mono text-text-muted block mt-1">{"{ question: string, with_kakapo: boolean }"}</code>
-            <Link href="/about/api" className="text-xs font-mono text-accent mt-3 block no-underline hover:text-accent-hover">
-              Documentation complète →
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            {[
+              { label: "Délai d'intégration", value: "< 1 jour" },
+              { label: "Endpoints", value: "1 seul" },
+              { label: "Modification archi", value: "aucune" },
+              { label: "Documentation", value: "disponible" },
+            ].map(({ label, value }) => (
+              <div key={label} className="border border-border rounded p-4 bg-surface-1">
+                <p className="text-2xs text-text-muted mb-1">{label}</p>
+                <p className="text-sm text-text-primary font-mono">{value}</p>
+              </div>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/demo"
+              className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-sm font-mono px-6 py-3 rounded transition-colors no-underline">
+              Voir la démo →
             </Link>
+            <a href="mailto:partnerships@kakapo.io?subject=Intégration LLM KAKAPO"
+              className="inline-flex items-center gap-2 border border-border hover:border-accent/30 text-text-secondary text-sm font-mono px-6 py-3 rounded transition-colors no-underline">
+              Discuter d'une intégration →
+            </a>
           </div>
         </div>
       )}
 
-      {activeTab === "pricing" && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[
-            { name: "Startup", vo: "50K VO/mois", price: "500 USD/mois", desc: "LLMs verticaux, startups IA" },
-            { name: "Scale", vo: "500K VO/mois", price: "4 000 USD/mois", desc: "LLMs mid-market + support prioritaire", highlight: true },
-            { name: "Foundational", vo: "Illimité", price: "Sur devis", desc: "Mistral, OpenAI niveau — contrat annuel" },
-          ].map(p => (
-            <div key={p.name} className={`border rounded-lg p-5 ${"highlight" in p && p.highlight ? "border-accent bg-accent/5" : "border-border bg-surface-2"}`}>
-              <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">{p.name}</p>
-              <p className="text-xl font-mono font-bold text-text-primary mb-1">{p.price}</p>
-              <p className="text-xs font-mono text-text-muted mb-3">{p.vo}</p>
-              <p className="text-xs text-text-muted leading-relaxed mb-4">{p.desc}</p>
-              <Link href="/llm/contact" className="no-underline block text-center text-xs font-mono border border-accent text-accent hover:bg-accent hover:text-white py-2 rounded transition-colors">
-                Demander un accès →
-              </Link>
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
 }
