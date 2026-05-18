@@ -30,33 +30,33 @@ export default async function HomePage() {
         <div className="inline-flex items-center gap-2 border border-accent/30 bg-accent/5 rounded-full px-4 py-1.5 mb-8">
           <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
           <span className="text-2xs font-mono text-accent">
-            {certified > 0 ? formatCount(certified) : "40M+"} scientific sources verified
+            {certified > 0 ? formatCount(certified) : "40M+"} sources scientifiques vérifiées
           </span>
         </div>
 
         <h1 className="text-4xl sm:text-5xl font-display text-text-primary leading-tight mb-6 max-w-3xl">
-          KAKAPO guarantees that every scientific source used by an AI is authentic, traceable and legally admissible. Worldwide.
+          KAKAPO garantit que chaque source scientifique utilisée par une IA est authentique, traçable et juridiquement opposable. Dans le monde entier.
         </h1>
 
         <p className="text-base text-text-secondary leading-relaxed max-w-2xl mb-4">
-          Healthcare, pharma, legal, defense — these markets represent{" "}
-          <strong className="text-text-primary">$187 billion for AI by 2030</strong>.
-          They are closed to LLMs today because they cannot prove their sources.
-          KAKAPO opens these markets.
+          Santé, pharma, legal, défense — ces marchés représentent{" "}
+          <strong className="text-text-primary">187 milliards USD pour l'IA d'ici 2030</strong>.
+          Ils sont aujourd'hui fermés aux LLMs parce qu'ils ne peuvent pas prouver leurs sources.
+          KAKAPO ouvre ces marchés.
         </p>
 
         <p className="text-sm font-mono text-accent mb-10">
-          EU · China · USA — Source traceability is now a global legal obligation.
+          UE · Chine · États-Unis — La traçabilité des sources IA est désormais une obligation légale mondiale.
         </p>
 
         <div className="flex flex-wrap gap-3">
           <Link href="/demo"
             className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-sm font-mono px-6 py-3 rounded transition-colors no-underline">
-            See it live →
+            Voir la démo →
           </Link>
           <Link href="/entreprise"
             className="inline-flex items-center gap-2 border border-border hover:border-accent/30 text-text-secondary hover:text-text-primary text-sm font-mono px-6 py-3 rounded transition-colors no-underline">
-            Enterprise solutions
+            Solutions entreprise
           </Link>
         </div>
       </section>
@@ -66,19 +66,19 @@ export default async function HomePage() {
           {[
             {
               value: certified > 0 ? formatCount(certified) : "40M+",
-              label: "Scientific sources verified"
+              label: "Sources scientifiques vérifiées"
             },
             {
-              value: "$187B",
-              label: "AI regulated market by 2030"
+              value: "187 Mds $",
+              label: "Marché IA régulé en 2030"
             },
             {
-              value: "< 1 day",
-              label: "API integration"
+              value: "< 1 jour",
+              label: "Intégration API"
             },
             {
-              value: "3 regions",
-              label: "EU · China · USA enforcing"
+              value: "3 régions",
+              label: "UE · Chine · USA — obligation légale"
             },
           ].map(({ value, label }) => (
             <div key={label}>
@@ -91,64 +91,64 @@ export default async function HomePage() {
 
       <section className="py-12 border-b border-border">
         <p className="text-2xs font-mono text-text-muted uppercase tracking-widest mb-10">
-          Three actors. One standard.
+          Trois acteurs. Un seul standard.
         </p>
 
         <div className="divide-y divide-border">
 
           <div className="py-10">
             <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">
-              LLMs & AI Platforms — Mistral · Claude · GPT · DeepSeek
+              LLMs & Plateformes IA — Mistral · Claude · GPT · DeepSeek
             </p>
             <h2 className="text-2xl font-display text-text-primary mb-4">
-              $187 billion in regulated markets are closed to you today.
+              187 milliards USD de marchés régulés vous sont fermés aujourd'hui.
             </h2>
             <p className="text-sm text-text-secondary leading-relaxed max-w-2xl mb-4">
-              Pharma, healthcare, legal, defense — these enterprise clients require every AI response
-              to cite sources verified by an independent third party.
-              Without that: no contract. With KAKAPO: the contract is signed.
+              Pharma, santé, legal, défense — ces clients enterprise exigent que chaque réponse IA
+              cite des sources vérifiées par un tiers indépendant.
+              Sans ça : contrat perdu. Avec KAKAPO : contrat signé.
             </p>
             <p className="text-sm font-mono text-text-muted">
-              10 enterprise clients × $300K/year ={" "}
-              <strong className="text-text-primary">$3M ARR unreachable without KAKAPO</strong>
+              10 clients enterprise × 300 000 USD/an ={" "}
+              <strong className="text-text-primary">3M USD ARR inaccessible sans KAKAPO</strong>
             </p>
           </div>
 
           <div className="py-10">
             <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">
-              Specialized Medical AI & Drug Discovery — Aidoc · BenevolentAI · Insilico
+              IA Médicales & Drug Discovery — Aidoc · BenevolentAI · Insilico
             </p>
             <h2 className="text-2xl font-display text-text-primary mb-4">
-              These systems use scientific literature without independent certification.
+              Ces systèmes utilisent la littérature scientifique sans certification indépendante.
             </h2>
             <p className="text-sm text-text-secondary leading-relaxed max-w-2xl mb-4">
-              Aidoc processes 60 million patient cases per year across 1,600 medical centers.
-              BenevolentAI builds its drug discovery engine on scientific publications.
-              Neither has an independent third-party certification layer.
-              EU AI Act 2026 changes that. KAKAPO is the infrastructure they don't have yet.
+              Aidoc traite 60 millions de cas patients par an dans 1 600 centres médicaux.
+              BenevolentAI construit son moteur de drug discovery sur des publications scientifiques.
+              Aucun des deux ne dispose d'une couche de certification tierce indépendante.
+              L'EU AI Act 2026 change ça. KAKAPO est l'infrastructure qu'ils n'ont pas encore.
             </p>
             <p className="text-sm font-mono text-text-muted">
-              Sources:{" "}
-              <span className="text-text-secondary">Aidoc official press release Jan. 2026 · DrugPatentWatch 2026</span>
+              Sources :{" "}
+              <span className="text-text-secondary">Aidoc communiqué officiel janv. 2026 · DrugPatentWatch 2026</span>
             </p>
           </div>
 
           <div className="py-10">
             <p className="text-2xs font-mono text-accent uppercase tracking-widest mb-2">
-              Pharma · Legal · Finance — Worldwide
+              Pharma · Legal · Finance — Mondial
             </p>
             <h2 className="text-2xl font-display text-text-primary mb-4">
-              Every source timestamped. Non-alterable. Admissible in any jurisdiction.
+              Chaque source horodatée. Non altérable. Admissible dans toute juridiction mondiale.
             </h2>
             <p className="text-sm text-text-secondary leading-relaxed max-w-2xl mb-4">
-              FDA NDA filing fee 2025: $4.3M USD.
-              500 sources verified by KAKAPO: $200.
-              Each source is cryptographically sealed, timestamped and verifiable
-              by any independent auditor — FDA, EMA, court, or regulator — anywhere in the world.
+              Frais de dépôt NDA FDA 2025 : 4,3 millions USD.
+              500 sources vérifiées par KAKAPO : 200 USD.
+              Chaque source est scellée cryptographiquement, horodatée et vérifiable
+              par tout auditeur indépendant — FDA, EMA, tribunal, régulateur — partout dans le monde.
             </p>
             <p className="text-sm font-mono text-text-muted">
-              Source:{" "}
-              <span className="text-text-secondary">FDA official fee schedule 2025</span>
+              Source :{" "}
+              <span className="text-text-secondary">Barème officiel FDA 2025</span>
             </p>
           </div>
 
@@ -159,16 +159,16 @@ export default async function HomePage() {
         <div className="flex items-center justify-between flex-wrap gap-6">
           <div>
             <h2 className="text-xl font-display text-text-primary mb-2">
-              Claude alone vs Claude + KAKAPO.
+              Claude seul vs Claude + KAKAPO.
             </h2>
             <p className="text-sm text-text-secondary max-w-lg">
-              Ask a scientific question. The difference is immediate.
-              Unverified answer versus certified, traceable, admissible response.
+              Posez une question scientifique. La différence est immédiate.
+              Réponse non sourcée versus réponse certifiée, traçable, opposable.
             </p>
           </div>
           <Link href="/demo"
             className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-white text-sm font-mono px-6 py-3 rounded transition-colors no-underline flex-shrink-0">
-            Live demo →
+            Démo live →
           </Link>
         </div>
       </section>
@@ -177,15 +177,15 @@ export default async function HomePage() {
         <div className="flex items-center justify-between flex-wrap gap-6">
           <div>
             <h2 className="text-xl font-display text-text-primary mb-2">
-              Integrate KAKAPO in one day.
+              Intégrez KAKAPO en une journée.
             </h2>
             <p className="text-sm text-text-secondary max-w-lg">
-              One endpoint. One API key. Your AI responses become certified.
+              Un endpoint. Une clé API. Vos réponses IA deviennent certifiées.
             </p>
           </div>
           <a href="mailto:partnerships@kakapo.io"
             className="inline-flex items-center gap-2 border border-border hover:border-accent/50 text-text-secondary hover:text-text-primary text-sm font-mono px-6 py-3 rounded transition-colors no-underline flex-shrink-0">
-            Contact us →
+            Nous contacter →
           </a>
         </div>
       </section>
