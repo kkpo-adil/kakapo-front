@@ -428,3 +428,110 @@ Pour toute question opérationnelle, technique, ou commerciale, contacter le fou
 Identifiants détaillés et coordonnées personnelles : volontairement non listés ici pour permettre le partage du document avec des tiers (prospects, futurs développeurs, partenaires) sans exposer le profil du founder.
 
 Document maintenu manuellement. Dernière mise à jour : 28 mai 2026, ~03:00 CEST. Voir section 11 pour le journal complet.
+-----
+
+## 16. Critères d'ingestion et de certification
+
+### 16.1 Doctrine i-KPT par défaut, KPT-Editorial en exception
+
+Toute publication ingérée en Phase 1 (corpus ouvert) est marquée en i-KPT — indexé avec fingerprint cryptographique, sans certification éditoriale formelle. C'est la doctrine.
+
+L'upgrade i-KPT vers KPT-Editorial se fait uniquement quand un partenariat formel a été signé avec l'éditeur (Year 1 plan).
+
+Préfixes par source :
+- `PMC`, `EPMC` : PubMed Central et Europe PMC
+- `OA` : OpenAlex
+- `HAL` : Archive ouverte française
+- `CT` : ClinicalTrials.gov
+- `arXiv` : préprints
+- `IKPT` : marqueur explicite i-KPT
+
+### 16.2 Critères d'ingestion d'une publication
+
+Au moment où un ingestor (HAL, PubMed, EPMC, OpenAlex) écrit une publication en base :
+
+1. Source autorisée — l'une des 5 sources Phase 1.
+2. Métadonnées minimales — titre, source, date.
+3. Dédoublonnage — `ON CONFLICT DO NOTHING` sur DOI ou external_id.
+4. KPT émis — préfixe i-KPT par défaut, `kpt_status='indexed'`.
+5. Fingerprint multi-zone SHA-256 calculé immédiatement :
+   - `fp_identity` : titre, auteurs, date
+   - `fp_protocol` : contenu structuré (essais : interventions, outcomes)
+   - `fp_outcomes` : résultats
+   - `fp_narrative` : résumé, description
+   - `fp_canonical` : empreinte agrégée
+6. Source URL stockée — pour re-fetch ultérieur par le daemon.
+7. `integrity_status` initial = NULL (jamais re-vérifié).
+
+Aucune promesse de certification éditoriale ou de validation scientifique au moment de l'ingestion. C'est volontaire et conforme à la doctrine Layer 1.
+
+### 16.3 Monitoring digital — 4 niveaux de détection d'altération
+
+Architecture construite les 22-25 mai 2026. Code en place dans `app/services/integrity_checker.py` (fonctions `verify_kpt`, `recrawl_batch`, `get_integrity_summary`).
+
+**Niveau 1 — Re-crawl périodique (daemon background)**
+- Re-fetch X KPTs par heure depuis leur source URL.
+- Recalcule le fingerprint multi-zone live.
+- Compare avec le fingerprint stocké.
+- Si mismatch : log dans `alterations` + bump `kpl_version`.
+
+**Niveau 2 — Verify-on-stream (à chaque requête /demo)**
+- Quand l'IA cite une source, fetch live de l'URL.
+- Recalcule hash en temps réel.
+- Stream OK si match, propagation v2 si mismatch.
+
+**Niveau 3 — Subscription retraction watch (daily)**
+- Sync avec DB officielles de rétractations scientifiques.
+- Match par DOI ou PMID.
+- `integrity_status='retracted'` si match.
+
+**Niveau 4 — KPL versioning (Knowledge Provenance Layer)**
+- Altération détectée : génère KPT-v2.
+- v1 reste immutable dans `alterations`.
+- Lien v1 vers v2 via `previous_hash`.
+
+### 16.4 État actuel du monitoring (5 juin 2026)
+
+**Construit mais dormant.** Le code est en place, la table `alterations` contient 19 entrées historiques (protocol=2, multiple=17), mais aucun daemon ne tourne en continu :
+
+- `publications.last_verified_at MAX` = NULL — aucune publication jamais re-vérifiée.
+- `clinical_trials.last_verified_at MAX` = 24 mai 2026 14:20 UTC.
+- 0 KPTs re-vérifiés sur les 7 derniers jours.
+- Aucun `crontab`, aucun process `recrawl` actif.
+
+**Pourquoi c'est acceptable aujourd'hui** : la surveillance est on-demand via `/demo/integrity/verify/{kpt_id}`. Elle passera en daemon permanent à partir du premier client signé.
+
+**Pourquoi c'est à documenter** : pour pouvoir répondre franchement à un VC ou prospect — "construit, opérationnel on-demand, daemon activé au premier contrat".
+
+### 16.5 Activer le monitoring en daemon (procédure)
+
+Sur EC2, lancer en arrière-plan :
+
+nohup ~/venv/bin/python3 -c “
+import sys; sys.path.insert(0, ‘/home/ubuntu/kakapo’)
+from dotenv import load_dotenv; load_dotenv(’/home/ubuntu/kakapo/.env’)
+import os, time
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from app.services.integrity_checker import recrawl_batch
+e = create_engine(os.environ[‘DATABASE_URL’], pool_pre_ping=True)
+SessionLocal = sessionmaker(bind=e)
+while True:
+db = SessionLocal()
+try:
+r = recrawl_batch(db, batch_size=100, max_age_hours=168)
+print(time.strftime(’%FT%TZ’), r)
+except Exception as ex:
+print(‘ERR’, ex)
+finally:
+db.close()
+time.sleep(3600)
+“ > ~/integrity_daemon.log 2>&1 &
+
+- Tourne en boucle infinie, 1 cycle/heure, batch=100.
+- Log dans `~/integrity_daemon.log`.
+- Suivre l'avancée : `tail -f ~/integrity_daemon.log`.
+- Kill : `pkill -f "recrawl_batch"`.
+
+-----
+
