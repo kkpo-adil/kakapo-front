@@ -432,19 +432,34 @@ Document maintenu manuellement. Dernière mise à jour : 28 mai 2026, ~03:00 CES
 
 ## 16. Critères d'ingestion et de certification
 
-### 16.1 Doctrine i-KPT par défaut, KPT-Editorial en exception
+### 16.1 Doctrine — KPT certifié cryptographiquement
 
-Toute publication ingérée en Phase 1 (corpus ouvert) est marquée en i-KPT — indexé avec fingerprint cryptographique, sans certification éditoriale formelle. C'est la doctrine.
+Oparence ne distingue pas i-KPT (indexé) et KPT-Editorial (certifié). Toute publication ou essai clinique entré dans le système porte un KPT certifié cryptographiquement.
 
-L'upgrade i-KPT vers KPT-Editorial se fait uniquement quand un partenariat formel a été signé avec l'éditeur (Year 1 plan).
+La certification n'est PAS un jugement éditorial ou scientifique. La certification EST une preuve technique opposable, produite à l'ingestion :
 
-Préfixes par source :
+- Empreinte SHA-256 multi-zone (identity, metadata, content, references, canonical)
+- Métriques quantitatives (content_length, word_count)
+- Hashs de bordures (first_sentence, last_sentence)
+- Version du spec de calcul (traçabilité du protocole)
+
+Ce que le KPT certifie :
+- La publication existe telle qu'Oparence l'a observée à l'instant T.
+- Son contenu n'a pas été altéré depuis ce snapshot — recalculer le hash le prouve.
+- Si une altération survient, Oparence détecte précisément quelle zone a bougé.
+
+Ce que le KPT ne certifie pas (hors scope Layer 1) :
+- La validité scientifique du contenu.
+- Le raisonnement de l'IA qui utilise la source.
+- L'absence d'erreur du peer review d'origine.
+
+Préfixes KPT actuels en base — purement informatifs sur la source d'ingestion, sans hiérarchie de certification :
 - `PMC`, `EPMC` : PubMed Central et Europe PMC
 - `OA` : OpenAlex
 - `HAL` : Archive ouverte française
 - `CT` : ClinicalTrials.gov
 - `arXiv` : préprints
-- `IKPT` : marqueur explicite i-KPT
+- `IKPT` : préfixe générique
 
 ### 16.2 Critères d'ingestion d'une publication
 
@@ -453,17 +468,15 @@ Au moment où un ingestor (HAL, PubMed, EPMC, OpenAlex) écrit une publication e
 1. Source autorisée — l'une des 5 sources Phase 1.
 2. Métadonnées minimales — titre, source, date.
 3. Dédoublonnage — `ON CONFLICT DO NOTHING` sur DOI ou external_id.
-4. KPT émis — préfixe i-KPT par défaut, `kpt_status='indexed'`.
+4. KPT émis avec préfixe correspondant à la source.
 5. Fingerprint multi-zone SHA-256 calculé immédiatement :
-   - `fp_identity` : titre, auteurs, date
-   - `fp_protocol` : contenu structuré (essais : interventions, outcomes)
-   - `fp_outcomes` : résultats
-   - `fp_narrative` : résumé, description
-   - `fp_canonical` : empreinte agrégée
-6. Source URL stockée — pour re-fetch ultérieur par le daemon.
-7. `integrity_status` initial = NULL (jamais re-vérifié).
-
-Aucune promesse de certification éditoriale ou de validation scientifique au moment de l'ingestion. C'est volontaire et conforme à la doctrine Layer 1.
+   - Pour les **publications** : `fp_identity` (doi, titre, auteurs, journal), `fp_metadata` (titre, auteurs, journal), `fp_content` (abstract, full_text), `fp_references` (liste DOI cités), `fp_canonical` (agrégé).
+   - Pour les **clinical trials** : `fp_identity` (nct, titre, sponsor), `fp_protocol` (study_type, phase, conditions, interventions, eligibility), `fp_outcomes` (primary + secondary outcomes), `fp_narrative` (brief + detailed description), `fp_canonical` (agrégé).
+6. Métriques quantitatives stockées : `fp_content_length`, `fp_word_count`.
+7. Hashs de bordures : `fp_first_sentence`, `fp_last_sentence`.
+8. Version du spec : `fp_spec_version` (traçabilité du protocole de calcul).
+9. Source URL stockée — pour re-fetch ultérieur par le daemon.
+10. `integrity_status` initial = NULL (jamais re-vérifié — sera fixé par le monitoring).
 
 ### 16.3 Monitoring digital — 4 niveaux de détection d'altération
 
